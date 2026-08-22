@@ -66,6 +66,14 @@ export function WebFooter() {
                 <span style={{ flex: 'none', opacity: .55 }}>➤</span>{sc.label}
               </a>
             ))}
+            <a href="/about/" className="eb-foot-link" style={{ ...linkRow, ...head, marginBottom: 0, justifyContent: 'space-between' }}>
+              <span>О нас</span>
+              <span style={{ color: '#C9C4B8', flex: 'none', marginLeft: 12 }}>›</span>
+            </a>
+            <a href="/blog/" className="eb-foot-link" style={{ ...linkRow, ...head, marginBottom: 0, justifyContent: 'space-between' }}>
+              <span>Блог</span>
+              <span style={{ color: '#C9C4B8', flex: 'none', marginLeft: 12 }}>›</span>
+            </a>
           </div>
         </div>
 
