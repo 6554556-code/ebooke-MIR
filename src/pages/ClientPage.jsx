@@ -14,6 +14,7 @@ import ClientPageWeb from './ClientPageWeb'
 function ClientPage() {
   const [executors, setExecutors] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   // В вебе по умолчанию показываем всех исполнителей (все категории).
   // В мини-аппе поведение прежнее — стартуем с клининга.
   const [selectedService, setSelectedService] = useState(isWeb() ? 'all' : 'cleaning')
@@ -157,6 +158,7 @@ useEffect(() => {
   let cancelled = false
   async function loadExecutors() {
     setLoading(true)
+    setLoadError('')
       let baseQuery = supabase
         .from('executors')
         .select('*, users(full_name), address')
@@ -171,6 +173,7 @@ useEffect(() => {
 
         if (error) {
           console.error(error)
+          setLoadError('Не удалось загрузить исполнителей. Проверьте соединение и попробуйте ещё раз.')
           setLoading(false)
           return
         }
@@ -392,6 +395,7 @@ useEffect(() => {
         search={search}
         setSearch={setSearch}
         loading={loading}
+        loadError={loadError}
         visibleExecutors={visibleExecutors}
         reviewStats={reviewStats}
         ordersCountByExecutor={ordersCountByExecutor}

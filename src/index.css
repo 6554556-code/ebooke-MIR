@@ -46,12 +46,12 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: 'Commissioner', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: 'Commissioner', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: 'Raleway Variable', 'Century Gothic', system-ui, 'Segoe UI', sans-serif;
+  --heading: 'Raleway Variable', 'Century Gothic', system-ui, 'Segoe UI', sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 350 18px/145% var(--sans);
+  letter-spacing: 0.08px;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);

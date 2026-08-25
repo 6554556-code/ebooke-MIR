@@ -1,48 +1,61 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase'
 import { saveSession } from '../session'
+import { BrandMark, WebBaseStyles } from '../components/WebShell'
+import UiIcon from '../components/UiIcon'
 
 const TG_BOT = 'ebookee777_bot' // @ebookee777_bot, домен привязан в BotFather -> ebookee.app
 
 const CSS = `
-.eblogin-screen{position:fixed;inset:0;z-index:1000;overflow:auto;background:#FBFAF7;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#161616}
-.eblogin-brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:34px}
-.eblogin-brand span{font-size:24px;font-weight:800;letter-spacing:-.6px}
-.eblogin-card{width:100%;max-width:400px;background:#fff;border:1px solid #ECECEC;border-radius:22px;
-  padding:30px 26px 26px;box-shadow:0 10px 40px -24px rgba(0,0,0,.25)}
-.eblogin-h1{font-size:23px;font-weight:800;letter-spacing:-.4px;margin:0 0 6px}
-.eblogin-lead{font-size:14px;color:#5A5A5A;line-height:1.5;margin:0 0 24px}
-.eblogin-lead b{color:#161616;font-weight:700}
-.eblogin-label{display:block;font-size:12.5px;font-weight:700;color:#5A5A5A;margin:0 0 8px;letter-spacing:.2px}
-.eblogin-phone{display:flex;align-items:center;background:#F6F6F4;border:1.5px solid transparent;
-  border-radius:14px;padding:0 14px;transition:border-color .15s,background .15s}
-.eblogin-phone:focus-within{border-color:#FFC01E;background:#fff}
-.eblogin-cc{font-size:17px;font-weight:600;color:#161616;padding-right:6px;position:relative;top:-2px}
-.eblogin-phone input{flex:1;border:0;background:transparent;outline:0;font-size:17px;font-weight:600;
-  letter-spacing:.5px;padding:15px 0;color:#161616;min-width:0}
+.eblogin-screen{position:fixed;inset:0;z-index:1000;overflow:auto;background:#FCFAFC;color:#2E2731;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;
+  font-family:'Raleway Variable','Century Gothic',system-ui,sans-serif;font-weight:350;letter-spacing:.004em}
+.eblogin-screen::before,.eblogin-screen::after{content:"";position:fixed;border-radius:50%;pointer-events:none;filter:blur(2px)}
+.eblogin-screen::before{width:520px;height:520px;left:-210px;top:-230px;background:radial-gradient(circle,rgba(235,94,198,.16),rgba(235,94,198,0) 68%)}
+.eblogin-screen::after{width:560px;height:560px;right:-220px;bottom:-270px;background:radial-gradient(circle,rgba(255,175,75,.17),rgba(255,175,75,0) 68%)}
+.eblogin-shell{position:relative;z-index:1;width:100%;max-width:430px}
+.eblogin-brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px;color:#211B23;text-decoration:none}
+.eblogin-brand span{font-size:23px;font-weight:550;letter-spacing:-.025em}
+.eblogin-card{position:relative;overflow:hidden;width:100%;background:rgba(255,255,255,.94);border:1px solid #EEE5EC;border-radius:26px;
+  padding:30px 30px 26px;box-shadow:0 22px 70px rgba(72,34,64,.10);backdrop-filter:blur(14px)}
+.eblogin-card::after{content:"";position:absolute;width:180px;height:180px;right:-100px;top:-105px;border-radius:50%;background:linear-gradient(145deg,rgba(233,87,197,.13),rgba(255,179,66,.14));pointer-events:none}
+.eblogin-role{position:relative;display:grid;place-items:center;width:48px;height:48px;margin:0 0 18px;border-radius:16px;color:#AF389A;background:linear-gradient(145deg,#FFF0FA,#FFF5EC);border:1px solid #F2D8E9}
+.eblogin-h1{position:relative;font-size:27px;font-weight:550!important;letter-spacing:-.025em;margin:0 0 8px;line-height:1.2}
+.eblogin-rolelead{position:relative;font-size:13.5px;color:#7A727C;line-height:1.55;margin:0 0 22px;max-width:330px}
+.eblogin-lead{font-size:13.5px;color:#6F6872;line-height:1.55;margin:0 0 22px}
+.eblogin-lead b{color:#2E2731;font-weight:500!important}
+.eblogin-label{display:block;font-size:12px;font-weight:450!important;color:#68606A;margin:0 0 8px;letter-spacing:.02em}
+.eblogin-phone{display:flex;align-items:center;background:#FCFAFC;border:1px solid #EAE2E8;
+  border-radius:15px;padding:0 15px;transition:border-color .18s,background .18s,box-shadow .18s}
+.eblogin-phone:focus-within{border-color:#DEA7D1;background:#fff;box-shadow:0 0 0 3px rgba(233,87,197,.10)}
+.eblogin-cc{font-size:16px;font-weight:400;color:#3D3540;padding-right:8px}
+.eblogin-phone input{flex:1;border:0;background:transparent;outline:0;font-size:16px;font-weight:350!important;
+  letter-spacing:.04em;padding:15px 0;color:#2E2731;min-width:0}
+.eblogin-phone input::placeholder{color:#AAA3AC}
 .eblogin-otp{display:flex;gap:10px;justify-content:space-between;margin-bottom:6px}
-.eblogin-otp input{width:100%;aspect-ratio:1/1;text-align:center;font-size:26px;font-weight:800;
-  border:1.5px solid #ECECEC;background:#F6F6F4;border-radius:14px;outline:0;color:#161616;
-  transition:border-color .12s,background .12s}
-.eblogin-otp input:focus{border-color:#FFC01E;background:#fff}
-.eblogin-btn{width:100%;margin-top:22px;padding:16px;font-size:16px;font-weight:800;background:#FFC01E;
-  color:#161616;border:0;border-radius:14px;cursor:pointer;transition:transform .04s,background .15s}
-.eblogin-btn:hover{background:#F0AE00}
-.eblogin-btn:active{transform:translateY(1px)}
-.eblogin-btn:disabled{opacity:.5;cursor:default;transform:none;background:#FFC01E}
-.eblogin-sub{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:13px}
-.eblogin-link{color:#5A5A5A;background:0;border:0;font-size:13px;font-weight:600;cursor:pointer;padding:4px 0}
-.eblogin-link:hover{color:#161616}
-.eblogin-timer{color:#5A5A5A;font-size:13px}
-.eblogin-msg{margin-top:16px;font-size:13.5px;line-height:1.45;padding:11px 13px;border-radius:11px}
-.eblogin-msg.err{background:#FCEBE7;color:#C0341D}
-.eblogin-fine{margin:18px 4px 0;font-size:11.5px;color:#9A9A9A;text-align:center;line-height:1.5}
-.eblogin-tg{display:flex;justify-content:center;min-height:46px;margin:20px 0 0}
-.eblogin-tghint{margin:16px 0 0;font-size:12px;color:#9A9A9A;text-align:center;line-height:1.4}
-.eblogin-or{display:flex;align-items:center;gap:12px;margin:20px 0 24px;color:#9A9A9A;font-size:12.5px;font-weight:600}
-.eblogin-or::before,.eblogin-or::after{content:"";flex:1;height:1px;background:#ECECEC}
+.eblogin-otp input{width:100%;aspect-ratio:1/1;text-align:center;font-size:25px;font-weight:450!important;
+  border:1px solid #EAE2E8;background:#FCFAFC;border-radius:15px;outline:0;color:#2E2731;
+  transition:border-color .15s,background .15s,box-shadow .15s}
+.eblogin-otp input:focus{border-color:#E19ACF;background:#fff;box-shadow:0 0 0 4px rgba(233,87,197,.10)}
+.eblogin-btn{width:100%;margin-top:20px;padding:15px;font-size:15px;font-weight:500!important;background:linear-gradient(100deg,#E651C5,#F268A8 48%,#FFB342);
+  color:#fff;border:0;border-radius:15px;cursor:pointer;box-shadow:0 10px 24px rgba(229,75,170,.20);transition:transform .18s,box-shadow .18s}
+.eblogin-btn:hover{transform:translateY(-1px);box-shadow:0 13px 29px rgba(229,75,170,.28)}
+.eblogin-btn:active{transform:translateY(0)}
+.eblogin-btn:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.eblogin-sub{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;font-size:12.5px}
+.eblogin-link{color:#9E318C;background:0;border:0;font-size:12.5px;font-weight:400!important;cursor:pointer;padding:4px 0;text-decoration:none}
+.eblogin-link:hover{color:#752468}
+.eblogin-timer{color:#827B84;font-size:12.5px}
+.eblogin-msg{margin-top:16px;font-size:13px;line-height:1.45;padding:12px 14px;border-radius:12px}
+.eblogin-msg.err{background:#FFF0F2;color:#B93D50;border:1px solid #F7D9DF}
+.eblogin-fine{margin:18px 4px 0;font-size:11px;color:#A49DA6;text-align:center;line-height:1.55}
+.eblogin-tg{display:flex;justify-content:center;min-height:46px;margin:18px 0 0}
+.eblogin-tghint{display:flex;align-items:flex-start;gap:9px;margin:16px 0 0;padding:12px 13px;border-radius:13px;background:#FFF8FC;color:#817781;font-size:12px;line-height:1.45;border:1px solid #F2E5EF;text-align:left}
+.eblogin-or{display:flex;align-items:center;gap:12px;margin:20px 0;color:#AAA3AC;font-size:12px;font-weight:350!important}
+.eblogin-or::before,.eblogin-or::after{content:"";flex:1;height:1px;background:#EEE7EC}
+.eblogin-secondary{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:12px;padding:13px;border:1px solid #E9C9E2;border-radius:14px;color:#A83293;text-decoration:none;font-size:13.5px;font-weight:450}
+.eblogin-secondary:hover{background:#FFF8FC;border-color:#DEA7D1}
+@media(max-width:520px){.eblogin-screen{justify-content:flex-start;padding:24px 14px}.eblogin-brand{margin-bottom:20px}.eblogin-card{padding:24px 20px 22px;border-radius:22px}.eblogin-h1{font-size:24px}}
 `
 
 function fmt(v) {
@@ -75,6 +88,27 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
   const timer = useRef(null)
   const tgBox = useRef(null)
 
+  const onTgAuth = useCallback(async (user) => {
+    setBusy(true); setErr('')
+    const r = await invoke('verify-tg', user)
+    if (r.ok) {
+      if (role === 'executor') {
+        const exec = (r.profiles || []).find(p => p.role === 'executor')
+        if (exec) { saveSession(exec); onSuccess?.(exec); return }
+        // Новый работник — как в мини-аппе: запоминаем личность (с ником из виджета) и ведём на регистрацию
+        const base = r.user || {}
+        saveSession({ ...base, telegram_username: base.telegram_username || (user.username ? user.username.toLowerCase() : null) })
+        window.location.href = '?register=executor'
+        return
+      }
+      saveSession(r.user); onSuccess?.(r.user); return
+    }
+    setBusy(false)
+    setErr(role === 'executor'
+      ? 'Не удалось войти через Telegram.'
+      : 'Не удалось войти через Telegram. Попробуйте по номеру.')
+  }, [onSuccess, role])
+
   useEffect(() => () => clearInterval(timer.current), [])
 
   // Telegram Login Widget: рисуется только на домене, привязанном в BotFather.
@@ -94,29 +128,8 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
     s.setAttribute('data-request-access', 'write')
     s.setAttribute('data-onauth', 'onTelegramAuth(user)')
     box.appendChild(s)
-    return () => { box.innerHTML = ''; try { delete window.onTelegramAuth } catch (_) {} }
-  }, [])
-
-  async function onTgAuth(user) {
-    setBusy(true); setErr('')
-    const r = await invoke('verify-tg', user)
-    if (r.ok) {
-      if (role === 'executor') {
-        const exec = (r.profiles || []).find(p => p.role === 'executor')
-        if (exec) { saveSession(exec); onSuccess?.(exec); return }
-        // Новый работник — как в мини-аппе: запоминаем личность (с ником из виджета) и ведём на регистрацию
-        const base = r.user || {}
-        saveSession({ ...base, telegram_username: base.telegram_username || (user.username ? user.username.toLowerCase() : null) })
-        window.location.href = '?register=executor'
-        return
-      }
-      saveSession(r.user); onSuccess?.(r.user); return
-    }
-    setBusy(false)
-    setErr(role === 'executor'
-      ? 'Не удалось войти через Telegram.'
-      : 'Не удалось войти через Telegram. Попробуйте по номеру.')
-  }
+    return () => { box.innerHTML = ''; Reflect.deleteProperty(window, 'onTelegramAuth') }
+  }, [onTgAuth])
 
   function onPhone(e) {
     const { d, o } = fmt(e.target.value)
@@ -181,27 +194,30 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
 
   return (
     <>
+      <WebBaseStyles />
       <style>{CSS}</style>
-      <div className="eblogin-screen">
-        <div className="eblogin-brand">
-          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <path d="M15 2C9.5 2 5 6.4 5 11.8c0 6.9 8.3 14.7 9.3 15.6.4.4 1 .4 1.4 0 1-.9 9.3-8.7 9.3-15.6C25 6.4 20.5 2 15 2z" fill="#161616" />
-            <circle cx="15" cy="11.8" r="4.6" fill="#FFC01E" />
-          </svg>
-          <span>Ebookee</span>
-        </div>
+      <div className="eb-web eblogin-screen">
+        <div className="eblogin-shell">
+        <a href="/" className="eblogin-brand" aria-label="На главную ebookee">
+          <BrandMark size={34} />
+          <span className="eb-brand-name">ebookee</span>
+        </a>
 
         {step === 'phone' && (
           <div className="eblogin-card">
+            <div className="eblogin-role"><UiIcon name={role === 'executor' ? 'user' : 'crown'} size={23}/></div>
             <h1 className="eblogin-h1">{title}</h1>
+            <p className="eblogin-rolelead">{role === 'executor'
+              ? 'Управляйте расписанием, заявками и услугами в одном спокойном рабочем пространстве.'
+              : 'Ваши записи, статусы заказов и связь с исполнителями — в одном месте.'}</p>
             {typeof window !== 'undefined' && window.location.hostname === 'ebookee.app'
               ? <div className="eblogin-tg" ref={tgBox} />
-              : <div className="eblogin-tghint">Вход через Telegram доступен на ebookee.app</div>}
+              : <div className="eblogin-tghint"><UiIcon name="telegram" size={17} style={{ flex: 'none', color: '#B23B9E' }}/>Вход через Telegram будет доступен на основном домене ebookee.app</div>}
             {role !== 'executor' && (<>
               <div className="eblogin-or">или по номеру телефона</div>
               <p className="eblogin-lead">Введите номер — пришлём код в SMS. Пароль не нужен.</p>
               <label className="eblogin-label">Номер телефона</label>
-              <div className="eblogin-phone">
+              <div className="eblogin-phone eb-field">
                 <span className="eblogin-cc">+7</span>
                 <input value={display} onChange={onPhone} type="tel" inputMode="numeric"
                   placeholder="900 000-00-00" maxLength={15} autoComplete="tel"
@@ -211,6 +227,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
                 {busy ? 'Отправляю…' : 'Получить код'}
               </button>
             </>)}
+            {role === 'executor' && <a href="?register=executor" className="eblogin-secondary"><UiIcon name="plus" size={16}/>Стать исполнителем</a>}
             {err && <div className="eblogin-msg err">{err}</div>}
             {onBack && <button className="eblogin-link" style={{ marginTop: 14 }} onClick={onBack}>← Назад</button>}
             <p className="eblogin-fine">Продолжая, вы соглашаетесь с условиями сервиса и политикой обработки данных.</p>
@@ -219,6 +236,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
 
         {step === 'code' && (
           <div className="eblogin-card">
+            <div className="eblogin-role"><UiIcon name="message" size={23}/></div>
             <h1 className="eblogin-h1">Введите код</h1>
             <p className="eblogin-lead">Отправили на <b>+7 {display}</b></p>
             <div className="eblogin-otp" onPaste={onPaste}>
@@ -241,6 +259,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
             </div>
           </div>
         )}
+        </div>
       </div>
     </>
   )

@@ -33,21 +33,24 @@ export const FOOTER = {
 }
 
 // ─── ПАЛИТРА ВЕБА ───────────────────────────────────────────────
-export const Y = '#FDB813'        // основной жёлтый
-export const YP = '#EBA800'       // жёлтый при наведении/нажатии
-export const Y_SOFT = '#FBF0D2'   // мягкая жёлтая плашка
-export const Y_TINT = '#FFFDF6'   // почти белый с жёлтым подтоном
-export const Y_DARK = '#7A5A0A'   // тёмно-жёлтый текст на мягкой плашке
-export const INK = '#1A1A1A'
-export const MUTED = '#8C8C8C'
-export const LINE = '#ECECEC'
-export const LINE_2 = '#F0EDE6'
-export const BG = '#FBFAF7'
+export const Y = '#E957C5'
+export const YP = '#D947B6'
+export const Y_SOFT = '#FBEAF8'
+export const Y_TINT = '#FFF8FC'
+export const Y_DARK = '#A83293'
+export const GRADIENT = 'linear-gradient(100deg, #E651C5 0%, #F268A8 48%, #FFB342 100%)'
+export const GRADIENT_SOFT = 'linear-gradient(100deg, rgba(230,81,197,.10), rgba(255,179,66,.15))'
+export const INK = '#17131D'
+export const MUTED = '#85808B'
+export const LINE = '#EEE8ED'
+export const LINE_2 = '#F2EDF1'
+export const BG = '#FCFAFC'
 
 export const ROLE_BTN = {
   display: 'flex', alignItems: 'center', gap: 8, padding: '0 18px', height: 50,
   borderRadius: 13, fontSize: 15, fontWeight: 600,
-  background: '#F4F2ED', color: '#4A4A4A', textDecoration: 'none', whiteSpace: 'nowrap',
+  background: '#fff', color: '#332A3B', textDecoration: 'none', whiteSpace: 'nowrap',
+  border: '1px solid #EEE6ED', boxShadow: '0 5px 18px rgba(55,25,52,.05)',
 }
 
 // Цена в едином виде: 2 500 ₽ (как на витрине)

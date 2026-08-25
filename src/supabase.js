@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = window.location.hostname === 'localhost'
-  ? 'https://cdoxkdzajtdsehrhjfjp.supabase.co'
-  : `${window.location.origin}/supabase`
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkb3hrZHphanRkc2VocmhqZmpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2ODk0NzUsImV4cCI6MjA5NDI2NTQ3NX0.IVb5OTiGOPjoAcP7EHtv9YwxzOgr-DUfPvjBKRJ0b_M'
+const supabaseUrl = 'https://uppsarzjmyzoetzioqhd.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcHNhcnpqbXl6b2V0emlvcWhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTMyMTAsImV4cCI6MjEwMzIyOTIxMH0.W28SLLn81fhdJXGoIHlHlNZDZ1F6Sv3kH58twPLRskg'
 
 export const supabase = createClient(supabaseUrl, supabaseKey)

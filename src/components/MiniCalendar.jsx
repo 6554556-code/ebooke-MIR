@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import UiIcon from './UiIcon'
 
 const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
 const DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
@@ -143,7 +144,7 @@ export default function MiniCalendar({ value, onChange, minDate, allowPast, web 
           fontWeight: value ? 'bold' : 'normal',
         }}
       >
-        📅 {formatDisplay(value)}
+        <UiIcon name="calendar" size={16}/>{formatDisplay(value)}
       </button>
 
       {open && (

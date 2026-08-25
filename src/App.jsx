@@ -5,12 +5,13 @@ import RegisterExecutorPage from './pages/RegisterExecutorPage'
 import ClientCabinetPage from './pages/ClientCabinetPage'
 import ExecutorSettingsPage from './pages/ExecutorSettingsPage'
 import { useEffect, useState } from 'react'
-import { initTelegram, getTelegramUser, syncTelegramUsername } from './telegram'
+import { initTelegram, getTelegramUser, syncTelegramUsername, isWeb } from './telegram'
 import { supabase } from './supabase'
 import { getSession } from './session'
 import LoginPage from './pages/LoginPage'
 import LegalPage from './pages/LegalPage'
 import { LEGAL_ROUTES } from './legalDocs'
+import UiIcon from './components/UiIcon'
 
 function App() {
   // 'checking' пока ждём ответа БД, 'blocked' если в blocked_users, 'ok' во всех остальных случаях
@@ -90,7 +91,7 @@ function App() {
         textAlign: 'center',
         background: '#fafafa'
       }}>
-        <div style={{ fontSize: '64px', marginBottom: '16px' }}>⚙️</div>
+        <div style={{ width: 64, height: 64, borderRadius: 22, marginBottom: 16, display: 'grid', placeItems: 'center', color: '#B13A9D', background: '#FFF1FA' }}><UiIcon name="tool" size={30}/></div>
         <h2 style={{ margin: '0 0 12px', fontSize: '20px', color: '#333' }}>
           Приложение временно недоступно
         </h2>
@@ -110,7 +111,7 @@ function App() {
             cursor: 'pointer'
           }}
         >
-          🔄 Перезагрузить
+          Перезагрузить
         </button>
       </div>
     )
@@ -157,7 +158,7 @@ function App() {
   }
 
   if (isMap) {
-    return <MapPage />
+    return isWeb() ? <ClientPage /> : <MapPage />
   }
 
   return <ClientPage />

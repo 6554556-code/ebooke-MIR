@@ -7,7 +7,8 @@ import MiniCalendar from '../components/MiniCalendar'
 import { useProfessions } from '../hooks/useProfessions'
 import { getSession } from '../session'
 import { BrandMark, WebFooter, WebBaseStyles } from '../components/WebShell'
-import { ROLE_BTN, rub, Y, YP, Y_SOFT, Y_TINT, Y_DARK, INK, MUTED, LINE, LINE_2, BG } from '../webTheme'
+import UiIcon, { categoryIcon } from '../components/UiIcon'
+import { ROLE_BTN, rub, Y, Y_SOFT, Y_TINT, Y_DARK, INK, MUTED, LINE, LINE_2, BG, GRADIENT } from '../webTheme'
 
 // ─────────────────────────────────────────────────────────────────
 //  ВЕБ-ВЕРСИЯ СТРАНИЦЫ ЗАПИСИ (десктоп)
@@ -16,8 +17,8 @@ import { ROLE_BTN, rub, Y, YP, Y_SOFT, Y_TINT, Y_DARK, INK, MUTED, LINE, LINE_2,
 // ─────────────────────────────────────────────────────────────────
 
 const CARD = {
-  background: '#fff', border: `1px solid ${LINE_2}`, borderRadius: 16,
-  padding: 22, marginBottom: 20, boxShadow: '0 1px 2px rgba(30,25,10,.05)',
+  background: '#fff', border: `1px solid ${LINE_2}`, borderRadius: 20,
+  padding: 22, marginBottom: 20, boxShadow: '0 10px 35px rgba(72,34,64,.06)',
 }
 const H = { fontSize: 19, fontWeight: 800, margin: '0 0 16px', color: INK }
 const LABEL = { margin: '0 0 6px', fontSize: 13, fontWeight: 700, color: '#5E5E5E' }
@@ -130,10 +131,10 @@ export default function BookingPageWeb({
         .ebb-pin-head::after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:11px;height:11px;background:#fff;border-radius:0 0 3px 0}
         .ebb-slot:hover{border-color:${Y} !important}
         .ebb-srv:hover{border-color:#E2D9BF !important}
-        .ebb-submit:hover:enabled{background:${YP} !important}
+        .ebb-submit:hover:enabled{background:${GRADIENT} !important;transform:translateY(-1px)}
         .ebb-link:hover{text-decoration:underline}
         .ebb-rating:hover span:last-child{text-decoration:underline}
-        .ebb-input:focus{border-color:${Y} !important;box-shadow:0 0 0 3px rgba(253,184,19,.18)}
+        .ebb-input:focus{border-color:${Y} !important;box-shadow:0 0 0 3px rgba(233,87,197,.16)}
         /* Отзывы — 3-й элемент грида: на десктопе под левой колонкой,
            справа заявка тянется на два ряда. На мобиле (ниже) placement сбрасываем,
            и по порядку в DOM отзывы оказываются ПОСЛЕ заявки. */
@@ -167,8 +168,8 @@ export default function BookingPageWeb({
           </a>
           <div style={{ flex: 1 }} />
           <div style={{ display: 'flex', gap: 10, flex: 'none' }}>
-            <a href="?executor=1" className="eb-role ebb-role" style={ROLE_BTN}>👷 <span className="ebb-role-txt">Я исполнитель</span></a>
-            <a href={session?.id ? `?client=${session.id}` : '?client=0'} className="eb-role ebb-role" style={ROLE_BTN}>🧑 <span className="ebb-role-txt">Я клиент</span></a>
+            <a href="?executor=1" className="eb-role ebb-role" style={ROLE_BTN}><UiIcon name="user" size={18} style={{ color: '#B13A9D' }}/><span className="ebb-role-txt">Я исполнитель</span></a>
+            <a href={session?.id ? `?client=${session.id}` : '?client=0'} className="eb-role ebb-role" style={ROLE_BTN}><UiIcon name="crown" size={18} style={{ color: '#F39A28' }}/><span className="ebb-role-txt">Я клиент</span></a>
           </div>
         </div>
       </header>
@@ -190,8 +191,8 @@ export default function BookingPageWeb({
             <div className="ebb-card ebb-master" style={{ ...CARD, position: 'relative', overflow: 'hidden' }}>
               {/* Мягкий жёлтый узор в углу — как на карточке «Свободны сегодня и завтра» */}
               <svg width="180" height="140" viewBox="0 0 150 120" style={{ position: 'absolute', right: 0, bottom: 0, pointerEvents: 'none' }}>
-                <path d="M20 120C40 70 90 96 120 52c18-26 14-44 14-52h16v120H20Z" fill="#FDB813" opacity=".10" />
-                <path d="M62 120c14-30 44-24 62-52 10-16 12-30 12-38h14v90H62Z" fill="#FDB813" opacity=".10" />
+                <path d="M20 120C40 70 90 96 120 52c18-26 14-44 14-52h16v120H20Z" fill="#E957C5" opacity=".10" />
+                <path d="M62 120c14-30 44-24 62-52 10-16 12-30 12-38h14v90H62Z" fill="#FFB342" opacity=".11" />
               </svg>
 
               {/* Верхний ряд: аватар + инфо */}
@@ -203,8 +204,8 @@ export default function BookingPageWeb({
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
                       {prof && (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 12px', background: '#FBF0D2', color: '#7A5A0A', borderRadius: 12, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                          {prof.icon} {prof.name}
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', background: '#FFF1FA', color: '#A83293', borderRadius: 99, fontSize: 13, fontWeight: 650, whiteSpace: 'nowrap' }}>
+                          <UiIcon name={categoryIcon(prof.code)} size={14}/>{prof.name}
                         </span>
                       )}
                       {stats && stats.alwaysOnTime && (
@@ -238,13 +239,13 @@ export default function BookingPageWeb({
                   {/* Счётчик заказов — как на витрине, только если count > 0 */}
                   {ordersCount > 0 && (
                     <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>
-                      📦 {ordersCount} {ordersCount === 1 ? 'заказ' : ordersCount < 5 ? 'заказа' : 'заказов'}
+                      <UiIcon name="package" size={14} style={{ verticalAlign: '-2px', marginRight: 5 }}/>{ordersCount} {ordersCount === 1 ? 'заказ' : ordersCount < 5 ? 'заказа' : 'заказов'}
                     </div>
                   )}
 
                   {/* Город и метро */}
-                  {executor.city && <div style={{ fontSize: 14, color: '#666', marginTop: 8 }}>📍 {executor.city}</div>}
-                  {executor.subway_station && <div style={{ fontSize: 14, color: '#666', marginTop: 4 }}>🚇 {executor.subway_station}</div>}
+                  {executor.city && <div style={{ fontSize: 14, color: '#666', marginTop: 8, display: 'flex', gap: 5, alignItems: 'center' }}><UiIcon name="pin" size={15}/>{executor.city}</div>}
+                  {executor.subway_station && <div style={{ fontSize: 14, color: '#666', marginTop: 4, display: 'flex', gap: 5, alignItems: 'center' }}><UiIcon name="metro" size={15}/>{executor.subway_station}</div>}
                 </div>
               </div>
 
@@ -254,7 +255,7 @@ export default function BookingPageWeb({
                   <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {executor.users?.full_name || 'Исполнитель'}
                   </span>
-                  {executor.is_verified && <span title="Проверенный исполнитель" style={{ flex: 'none' }}>✅</span>}
+                  {executor.is_verified && <UiIcon name="verified" size={20} title="Проверенный исполнитель" style={{ flex: 'none', color: '#3FD064' }}/>} 
                 </h2>
                 {fromPrice != null && (
                   <span style={{ whiteSpace: 'nowrap', flexShrink: 0, display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
@@ -284,10 +285,9 @@ export default function BookingPageWeb({
                   </MapContainer>
                 </div>
                 {(executor.subway_station || executor.address) && (
-                  <p style={{ margin: '12px 0 0', fontSize: 14, color: '#666' }}>
-                    {executor.subway_station && <>🚇 {executor.subway_station}</>}
-                    {executor.subway_station && executor.address && ' · '}
-                    {executor.address && <>📍 {executor.address}</>}
+                  <p style={{ margin: '12px 0 0', fontSize: 14, color: '#666', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    {executor.subway_station && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><UiIcon name="metro" size={15}/>{executor.subway_station}</span>}
+                    {executor.address && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><UiIcon name="pin" size={15}/>{executor.address}</span>}
                   </p>
                 )}
               </div>
@@ -319,7 +319,7 @@ export default function BookingPageWeb({
             <div style={CARD}>
               <p style={LABEL}>Тип визита</p>
               <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-                {[{ id: 'outcall', label: '🚗 Выезд ко мне' }, { id: 'incall', label: '🏠 Приём у мастера' }].map(t => {
+                {[{ id: 'outcall', label: 'Выезд ко мне', icon: 'car' }, { id: 'incall', label: 'Приём у мастера', icon: 'home' }].map(t => {
                   const disabled =
                     (t.id === 'outcall' && selectedService?.location_type === 'incall') ||
                     (t.id === 'incall' && selectedService?.location_type === 'outcall')
@@ -333,7 +333,7 @@ export default function BookingPageWeb({
                         color: disabled ? '#B4B4B4' : INK,
                         cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? .6 : 1,
                       }}>
-                      {t.label}
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}><UiIcon name={t.icon} size={17}/>{t.label}</span>
                     </button>
                   )
                 })}
@@ -357,7 +357,7 @@ export default function BookingPageWeb({
                       <span style={{ fontSize: 15, fontWeight: 600 }}>
                         {service.name}
                         <span style={{ color: MUTED, fontWeight: 500 }}>
-                          {' '}{service.location_type === 'outcall' ? '🚗' : service.location_type === 'incall' ? '🏠' : '🚗🏠'} · {service.duration} мин
+                          {' '}· {service.location_type === 'outcall' ? 'выезд' : service.location_type === 'incall' ? 'приём' : 'выезд или приём'} · {service.duration} мин
                         </span>
                       </span>
                       <span style={{ fontWeight: 800, fontSize: 16, whiteSpace: 'nowrap' }}>{rub(service.price)}</span>
@@ -409,7 +409,7 @@ export default function BookingPageWeb({
                   </div>
                 ))}
                 <div style={{ borderTop: `1px solid ${Y_SOFT}`, marginTop: 12, paddingTop: 12, fontSize: 14, display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#5E5E5E' }}>📅 Время</span>
+                  <span style={{ color: '#5E5E5E', display: 'inline-flex', alignItems: 'center', gap: 6 }}><UiIcon name="calendar" size={15}/>Время</span>
                   <span style={{ fontWeight: 700, textAlign: 'right' }}>
                     {liveSlot ? formatSlot(liveSlot.start) : <span style={{ color: '#C05C0F', fontWeight: 600 }}>не выбрано</span>}
                   </span>
@@ -459,10 +459,10 @@ export default function BookingPageWeb({
                 <span style={{ fontSize: 26, fontWeight: 800 }}>{rub(total)}</span>
               </div>
 
-              <button onClick={onSubmit} disabled={loading} className="ebb-submit"
+              <button onClick={onSubmit} disabled={loading} className="ebb-submit eb-primary"
                 style={{
                   width: '100%', padding: '15px', borderRadius: 13, border: 'none',
-                  background: loading ? '#E3E0D8' : Y, color: loading ? '#8C8C8C' : INK,
+                  background: loading ? '#E3E0D8' : GRADIENT, color: loading ? '#8C8C8C' : '#fff',
                   fontSize: 16, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer',
                 }}>
                 {loading ? 'Отправляем…' : 'Подтвердить заявку'}

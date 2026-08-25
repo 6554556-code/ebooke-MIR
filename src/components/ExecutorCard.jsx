@@ -1,5 +1,95 @@
 import Avatar from './Avatar'
 import { getLocationIcon } from '../utils/locationIcon'
+import UiIcon, { categoryIcon } from './UiIcon'
+import { GRADIENT } from '../webTheme'
+
+function WebExecutorCard({
+  executor, professions, reviewStats, ordersCountByExecutor, expandedServices,
+  setExpandedServices, expandedBios, setExpandedBios, onBook, onMessage,
+}) {
+  const prof = professions.find(p => p.code === executor.service_type)
+  const stats = reviewStats[executor.id]
+  const orders = ordersCountByExecutor[executor.id]?.fromApp || 0
+  const isBioOpen = expandedBios.includes(executor.id)
+  const isServicesOpen = expandedServices.includes(executor.id)
+  const bio = executor.bio || ''
+  const visibleBio = isBioOpen || bio.length <= 150 ? bio : `${bio.slice(0, 150).trimEnd()}…`
+  const mains = (executor.services || []).filter(s => s.is_main)
+  const shownMains = isServicesOpen ? mains : mains.slice(0, 2)
+  const hasSlots = executor.todaySlots?.length || executor.tomorrowSlots?.length
+
+  return (
+    <article id={`executor-card-${executor.id}`} className="eb-executor-card eb-card-surface" style={{
+      background: '#fff', padding: 20, width: '100%', boxSizing: 'border-box', overflow: 'hidden', position: 'relative',
+    }}>
+      <div aria-hidden="true" style={{ position: 'absolute', width: 190, height: 190, right: -95, top: -105, borderRadius: '50%', background: 'linear-gradient(135deg,rgba(233,87,197,.12),rgba(255,179,66,.13))' }} />
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, position: 'relative' }}>
+        <div style={{ padding: 3, borderRadius: '50%', background: 'linear-gradient(145deg,#EF70D0,#FFB342)', boxShadow: '0 7px 18px rgba(202,67,157,.18)' }}>
+          <div style={{ background: '#fff', borderRadius: '50%', padding: 2 }}>
+            <Avatar url={executor.avatar_url} name={executor.users?.full_name} size={82} />
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+            {prof ? <span className="eb-prof-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 999, background: '#FFF1FA', color: '#A83293', fontSize: 12, fontWeight: 650 }}>
+              <UiIcon name={categoryIcon(prof.code)} size={14} />{prof.name}
+            </span> : <span />}
+            {stats?.count > 0 ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
+              <UiIcon name="star" size={17} style={{ color: '#F6A623', fill: '#F6A623' }} />
+              <strong style={{ fontSize: 17 }}>{stats.avgRating}</strong>
+              <span style={{ color: '#96909A', fontSize: 12 }}>({stats.count})</span>
+            </span> : <span style={{ color: '#96909A', fontSize: 12 }}>Новый</span>}
+          </div>
+          <h3 style={{ margin: '11px 0 7px', fontSize: 20, lineHeight: 1.2, letterSpacing: '-.015em', fontWeight: 750, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{executor.users?.full_name || 'Исполнитель'}</span>
+            {executor.is_verified && <UiIcon name="verified" size={19} title="Проверенный исполнитель" style={{ color: '#3FD064', flex: 'none' }} />}
+          </h3>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', color: '#85808B', fontSize: 13 }}>
+            {executor.city && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><UiIcon name="pin" size={14}/>{executor.city}</span>}
+            {executor.subway_station && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><UiIcon name="metro" size={14}/>{executor.subway_station}</span>}
+          </div>
+          {(orders > 0 || stats?.alwaysOnTime) && <div style={{ display: 'flex', gap: 10, marginTop: 8, color: '#85808B', fontSize: 12 }}>
+            {orders > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><UiIcon name="package" size={13}/>{orders} заказов</span>}
+            {stats?.alwaysOnTime && <span style={{ color: '#238D4A' }}>Вовремя</span>}
+          </div>}
+        </div>
+      </div>
+
+      {bio && <p style={{ margin: '14px 0 0', color: '#6E6872', fontSize: 13.5, lineHeight: 1.55 }}>
+        {visibleBio}
+        {bio.length > 150 && <button onClick={e => { e.stopPropagation(); setExpandedBios(prev => isBioOpen ? prev.filter(id => id !== executor.id) : [...prev, executor.id]) }}
+          style={{ border: 0, background: 'none', color: '#B13A9D', cursor: 'pointer', padding: '0 0 0 5px', fontWeight: 650 }}>
+          {isBioOpen ? 'Свернуть' : 'Подробнее'}
+        </button>}
+      </p>}
+
+      {shownMains.length > 0 && <div style={{ marginTop: 14, borderTop: '1px solid #F1ECF0' }}>
+        {shownMains.map(service => <div key={service.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: '1px solid #F1ECF0', fontSize: 13.5 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 7, minWidth: 0 }}>
+            <UiIcon name={service.location_type === 'incall' ? 'home' : 'broom'} size={15} style={{ color: '#B13A9D', flex: 'none' }}/>
+            <span>{service.name} <span style={{ color: '#99929B' }}>· {service.duration} мин</span></span>
+          </span>
+          <strong style={{ whiteSpace: 'nowrap', fontSize: 14 }}>{Number(service.price).toLocaleString('ru-RU')} ₽</strong>
+        </div>)}
+        {mains.length > 2 && <button onClick={e => { e.stopPropagation(); setExpandedServices(prev => isServicesOpen ? prev.filter(id => id !== executor.id) : [...prev, executor.id]) }} style={{ border: 0, background: 'none', color: '#B13A9D', padding: '9px 0 0', fontSize: 13, fontWeight: 650, cursor: 'pointer' }}>
+          {isServicesOpen ? 'Свернуть услуги' : `Все услуги (${mains.length})`}
+        </button>}
+      </div>}
+
+      {hasSlots ? <div style={{ marginTop: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#736C76', fontSize: 12.5, marginBottom: 8 }}><UiIcon name="clock" size={15}/>Ближайшие слоты</div>
+        {[['Сегодня', executor.todaySlots], ['Завтра', executor.tomorrowSlots]].map(([day, slots]) => slots?.length > 0 && <div key={day} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 7 }}>
+          <span style={{ width: 58, color: '#918A94', fontSize: 12 }}>{day}</span>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{slots.map(slot => <span key={slot.start.toString()} className="eb-slot-chip" style={{ padding: '6px 10px', border: '1px solid #E8CCE2', borderRadius: 9, color: '#734068', background: '#FFFBFE', fontSize: 12.5 }}>{slot.label}</span>)}</div>
+        </div>) }
+      </div> : null}
+
+      <button onClick={e => { e.stopPropagation(); onBook() }} className="eb-primary" style={{ marginTop: 16, width: '100%', height: 46, border: 0, borderRadius: 13, background: GRADIENT, color: '#fff', cursor: 'pointer', fontSize: 15, fontWeight: 700 }}>Записаться</button>
+      {onMessage && <button onClick={e => { e.stopPropagation(); onMessage() }} style={{ marginTop: 9, width: '100%', height: 42, border: '1px solid #E9C8E1', borderRadius: 12, background: '#fff', color: '#B13A9D', cursor: 'pointer', fontSize: 14, fontWeight: 650, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}><UiIcon name="message" size={17}/>Написать</button>}
+    </article>
+  )
+}
 
 // Презентационная карточка исполнителя. Логика/данные — снаружи (ClientPage),
 // сюда прилетают готовые пропсы. Разметка и стили 1:1 как были в списке —
@@ -17,6 +107,9 @@ export default function ExecutorCard({
   web = false,        // веб-оформление (жёлтый акцент). По умолчанию false → мини-апп 1:1 как был.
   onMessage,          // если передан (веб) — показываем кнопку «Написать»
 }) {
+  if (web) {
+    return <WebExecutorCard {...{ executor, professions, reviewStats, ordersCountByExecutor, expandedServices, setExpandedServices, expandedBios, setExpandedBios, onBook, onMessage }} />
+  }
   // Палитра: дефолт = точь-в-точь прежние синие значения мини-аппа.
   const P = web
     ? { soft:'#FBF0D2', pill:'#7A5A0A', price:'#1A1A1A', link:'#8a6a1a',
