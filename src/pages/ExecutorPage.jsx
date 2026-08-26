@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { getTelegramUser, isWeb } from '../telegram'
 import { getSession, clearSession } from '../session'
@@ -1079,7 +1080,11 @@ function ExecutorPage({ executorId }) {
   const [notMyCabinet, setNotMyCabinet] = useState(false)  // зашли в ЛК, не будучи исполнителем
   const [loading, setLoading] = useState(true)
   const [ratingStats, setRatingStats] = useState(null)
-  const [activeTab, setActiveTab] = useState('schedule')
+  const { tab: urlTab } = useParams()
+  const navigate = useNavigate()
+  // Адрес /executor/finance ↔ внутренняя вкладка 'earnings'. Остальные совпадают.
+  const tabFromUrl = urlTab === 'finance' ? 'earnings' : urlTab
+  const activeTab = ['orders', 'schedule', 'earnings'].includes(tabFromUrl) ? tabFromUrl : 'schedule'
   const [showHelpModal, setShowHelpModal] = useState(false)
   const [showAddOrder, setShowAddOrder] = useState(false)
   const [scheduleWeekOffset, setScheduleWeekOffset] = useState(0)
@@ -1287,7 +1292,7 @@ function ExecutorPage({ executorId }) {
         onBack={() => setShowAddOrder(false)}
         onSuccess={() => {
           setShowAddOrder(false)
-          setActiveTab('schedule')
+          navigate('/executor/schedule')
           loadData()
         }}
       />
@@ -1459,7 +1464,7 @@ function ExecutorPage({ executorId }) {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => navigate('/executor/' + (tab.id === 'earnings' ? 'finance' : tab.id))}
             style={{
               padding: '6px 12px',
               borderRadius: '20px',
