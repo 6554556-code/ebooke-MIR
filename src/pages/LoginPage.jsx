@@ -210,7 +210,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
             <p className="eblogin-rolelead">{role === 'executor'
               ? 'Управляйте расписанием, заявками и услугами в одном спокойном рабочем пространстве.'
               : 'Ваши записи, статусы заказов и связь с исполнителями — в одном месте.'}</p>
-            {typeof window !== 'undefined' && window.location.hostname === 'ebookee.app'
+            {typeof window !== 'undefined' && window.location.hostname === 'ebooke-mir.vercel.app'
               ? <div className="eblogin-tg" ref={tgBox} />
               : <div className="eblogin-tghint"><UiIcon name="telegram" size={17} style={{ flex: 'none', color: '#B23B9E' }}/>Вход через Telegram будет доступен на основном домене ebookee.app</div>}
             {role !== 'executor' && (<>
