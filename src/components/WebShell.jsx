@@ -81,7 +81,7 @@ export function WebFooter() {
         <div className="eb-foot-req" style={{ borderTop: `1px solid ${LINE_2}`, marginTop: 20, paddingTop: 18, display: 'flex', alignItems: 'center', gap: 18 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 'none' }}>
             <BrandMark size={30} />
-            <span style={{ fontSize: 19, fontWeight: 800 }}>ebookee</span>
+            <span className="eb-brand-name">ebookee</span>
           </div>
           <div style={{ fontSize: 12, color: '#9A958C', lineHeight: 1.6 }}>
             {[FOOTER.company, FOOTER.inn && `ИНН ${FOOTER.inn}`].filter(Boolean).join('  •  ')}

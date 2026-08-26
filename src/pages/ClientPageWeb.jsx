@@ -12,7 +12,7 @@ import { Y, GRADIENT, GRADIENT_SOFT } from '../webTheme'
 const MOSCOW_CENTER = [55.7558, 37.6173]
 const ROLE_BTN = {
   display: 'flex', alignItems: 'center', gap: 8, padding: '0 18px', height: 50,
-  borderRadius: 13, fontSize: 15, fontWeight: 600,
+  borderRadius: 13, fontSize: 16, fontWeight: 600,
   background: '#fff', color: '#332A3B', textDecoration: 'none', whiteSpace: 'nowrap',
   border: '1px solid #EEE6ED', boxShadow: '0 5px 18px rgba(55,25,52,.05)',
 }
@@ -44,7 +44,7 @@ const PIN_CSS = `
 // Компактные кнопки ролей в мобильной шапке
 const ROLE_M = {
   display: 'flex', alignItems: 'center', gap: 5, padding: '0 11px', height: 38,
-  borderRadius: 11, fontSize: 13, fontWeight: 700, background: '#fff', border: '1px solid #EEE6ED',
+  borderRadius: 11, fontSize: 14, fontWeight: 700, background: '#fff', border: '1px solid #EEE6ED',
   color: '#3E3E3E', textDecoration: 'none', whiteSpace: 'nowrap',
 }
 
@@ -246,7 +246,7 @@ function DropdownFilter({ value, onValueChange, options, style, height = 46, bor
     <div ref={ref} className="eb-dropdown" style={{ position: 'relative', flex: 'none', minWidth: 168, ...style }}>
       <button ref={triggerRef} className="eb-field eb-dropdown-trigger" type="button" aria-label={ariaLabel}
         aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(current => !current)}
-        style={{ width: '100%', height, padding: compact ? '0 8px' : '0 13px', borderRadius, border: open ? '1px solid #D99AD0' : '1px solid #E7E3DA', background: '#fff', color: '#332A3B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: compact ? 5 : 8, fontSize: compact ? 12.5 : fontSize, boxShadow: open ? '0 0 0 3px rgba(155,86,210,.10)' : 'none', ...triggerStyle }}>
+        style={{ width: '100%', height, padding: compact ? '0 7px' : '0 13px', borderRadius, border: open ? '1px solid #D99AD0' : '1px solid #E7E3DA', background: '#fff', color: '#332A3B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: compact ? 4 : 8, fontSize: compact ? 13.5 : fontSize, boxShadow: open ? '0 0 0 3px rgba(155,86,210,.10)' : 'none', ...triggerStyle }}>
         {(triggerIcon || renderIcon) && <span style={{ color: '#A83293', display: 'inline-flex', alignItems: 'center', flex: 'none' }}>{triggerIcon || renderIcon(selected)}</span>}
         <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}>{selected?.label}</span>
         <UiIcon name="chevronDown" size={15} style={{ color: open ? '#9A3A9B' : '#756E77', flex: 'none', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .18s,color .18s' }}/>
@@ -273,6 +273,7 @@ function DropdownFilter({ value, onValueChange, options, style, height = 46, bor
 function FilterSelect({ value, onChange, options, style, compact = false }) {
   const icon = options === RATING_OPTS ? 'star' : 'sparkles'
   return <DropdownFilter value={value} options={options} style={style}
+    fontSize={15}
     ariaLabel={options === RATING_OPTS ? 'Выберите оценку' : 'Выберите услугу'}
     compact={compact} triggerIcon={<UiIcon name={icon} size={compact ? 14 : 17}/>} onValueChange={next => onChange({ target: { value: next } })}/>
 }
@@ -285,14 +286,14 @@ function VisitGlyphs({ value, size = 17 }) {
 
 function VisitFilter({ value, onChange, style, compact = false }) {
   return <DropdownFilter value={value} onValueChange={onChange} options={VISIT_OPTS} style={style}
-    compact={compact} menuWidth={compact ? 170 : undefined} ariaLabel="Место оказания услуги" renderIcon={option => <VisitGlyphs value={option.v} size={compact ? 14 : 16}/>}/>
+    compact={compact} fontSize={15} menuWidth={compact ? 170 : undefined} ariaLabel="Место оказания услуги" renderIcon={option => <VisitGlyphs value={option.v} size={compact ? 14 : 16}/>}/>
 }
 
 function CityFilter({ cities, value, onChange, mobile = false }) {
   const options = [{ v: 'all', label: 'Все города' }, ...cities.map(city => ({ v: city, label: city }))]
   return <DropdownFilter value={value} options={options} ariaLabel="Выберите город"
     style={{ width: mobile ? 165 : 220, maxWidth: mobile ? 165 : 220, minWidth: mobile ? 165 : 220 }}
-    height={mobile ? 46 : 50} borderRadius={mobile ? 13 : 999} fontSize={mobile ? 12.5 : 13}
+    height={mobile ? 46 : 50} borderRadius={mobile ? 13 : 999} fontSize={mobile ? 14 : 14.5}
     triggerIcon={<UiIcon name="pin" size={16}/>} triggerStyle={{ boxShadow: mobile ? 'none' : '0 5px 18px rgba(55,25,52,.035)' }}
     onValueChange={next => onChange({ target: { value: next } })}/>
 }
