@@ -494,9 +494,9 @@ for (const s of group) {
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '16px' }}>
       
       <div style={{ marginBottom: '12px' }}>
-        <a href="/?executor=1" style={{ fontSize: '14px', color: '#2481cc', textDecoration: 'none' }}>
+      <Link to="/executor/schedule" style={{ fontSize: '14px', color: '#2481cc', textDecoration: 'none' }}>
           ← Назад в кабинет
-        </a>
+        </Link>
       </div>
       <h2 style={{ textAlign: 'center' }}>⚙️ Настройки профиля</h2>
       <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
