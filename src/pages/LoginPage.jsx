@@ -98,7 +98,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
         // Новый работник — как в мини-аппе: запоминаем личность (с ником из виджета) и ведём на регистрацию
         const base = r.user || {}
         saveSession({ ...base, telegram_username: base.telegram_username || (user.username ? user.username.toLowerCase() : null) })
-        window.location.href = '?register=executor'
+        window.location.href = '/register'
         return
       }
       saveSession(r.user); onSuccess?.(r.user); return
