@@ -594,14 +594,21 @@ export default function ClientPageWeb({
           .eb-m-sheet{animation:eb-up .18s ease-out}
           @keyframes eb-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
           @media(max-width:520px){
-            .eb-m-header-row{gap:7px!important;padding:9px 10px!important}
-            .eb-m-header-row .eb-role{width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;justify-content:center;flex:none}
-            .eb-m-role-text{display:none}
+            .eb-m-header-row{gap:5px!important;padding:9px 8px!important}
+            .eb-m-header-brand{gap:5px!important}
+            .eb-m-header-brand img{width:24px!important;height:24px!important}
+            .eb-m-header-brand .eb-brand-name{font-size:20px!important}
+            .eb-m-header-row .eb-role{width:auto!important;min-width:0!important;height:38px!important;padding:0 6px!important;gap:3px!important;justify-content:center;flex:none;font-size:13px!important}
+            .eb-m-header-row .eb-role svg{width:14px!important;height:14px!important}
+            .eb-m-role-text{display:inline}
             .eb-map-full-filters{top:calc(12px + env(safe-area-inset-top))!important;left:0!important;right:0!important;padding-left:54px!important;padding-right:66px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
             .eb-m-filter-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
           }
           @media(max-width:350px){
-            .eb-m-header-brand .eb-brand-name{font-size:21px}
+            .eb-m-header-row{gap:4px!important;padding-left:6px!important;padding-right:6px!important}
+            .eb-m-header-brand img{width:22px!important;height:22px!important}
+            .eb-m-header-brand .eb-brand-name{font-size:19px!important}
+            .eb-m-header-row .eb-role{font-size:12.5px!important;padding-left:5px!important;padding-right:5px!important}
             .eb-m-search-row{display:grid!important;grid-template-columns:1fr!important}
             .eb-m-search-row>.eb-dropdown{width:100%!important;max-width:none!important;min-width:0!important}
           }
