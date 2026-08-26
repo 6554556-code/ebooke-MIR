@@ -7,6 +7,7 @@ import ExecutorCard from '../components/ExecutorCard'
 import { BrandMark, WebFooter, WebBaseStyles } from '../components/WebShell'
 import useIsMobile from '../hooks/useIsMobile'
 import UiIcon, { categoryIcon, iconSvgString } from '../components/UiIcon'
+import { Link } from 'react-router-dom'
 import { Y, GRADIENT, GRADIENT_SOFT } from '../webTheme'
 
 const MOSCOW_CENTER = [55.7558, 37.6173]
@@ -623,7 +624,7 @@ export default function ClientPageWeb({
             </a>
             <div style={{ flex: 1 }} />
             <a href="?executor=1" className="eb-role" style={ROLE_M} aria-label="Кабинет исполнителя"><UiIcon name="user" size={16}/><span className="eb-m-role-text">Исполнитель</span></a>
-            <a href={myUserId ? `?client=${myUserId}` : '?client=0'} className="eb-role" style={{ ...ROLE_M, color: '#A83293', borderColor: '#EDC9E5' }} aria-label="Кабинет клиента"><UiIcon name="crown" size={16}/><span className="eb-m-role-text">Клиент</span></a>
+            <Link to="/cabinet" className="eb-role" style={{ ...ROLE_M, color: '#A83293', borderColor: '#EDC9E5' }} aria-label="Кабинет клиента"><UiIcon name="crown" size={16}/><span className="eb-m-role-text">Клиент</span></Link>
           </div>
         </header>
 
