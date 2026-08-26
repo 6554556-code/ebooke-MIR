@@ -579,6 +579,10 @@ export default function ClientPageWeb({
         <style>{`
           body{overflow-x:hidden}
           ${PIN_CSS}
+          .eb-m{width:100%;max-width:100vw;overflow-x:hidden}
+          .eb-m-header,.eb-m-header-row{width:100%;max-width:100%}
+          .eb-m-header-row{min-width:0}
+          .eb-m-header-brand{min-width:0}
           .eb-m-chip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:16px;font-size:13px;font-weight:600;border:none;background:#EFECE6;color:#1A1A1A;cursor:pointer;line-height:1.15}
           .eb-m-chip .eb-m-ico{font-size:14px}
           .eb-m-chip[data-on="1"]{background:${Y};color:#1A1A1A}
@@ -589,12 +593,24 @@ export default function ClientPageWeb({
           .leaflet-container{border-radius:14px}
           .eb-m-sheet{animation:eb-up .18s ease-out}
           @keyframes eb-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+          @media(max-width:520px){
+            .eb-m-header-row{gap:7px!important;padding:9px 10px!important}
+            .eb-m-header-row .eb-role{width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;justify-content:center;flex:none}
+            .eb-m-role-text{display:none}
+            .eb-map-full-filters{top:calc(68px + env(safe-area-inset-top))!important;left:10px!important;right:10px!important;padding:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
+            .eb-m-filter-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
+          }
+          @media(max-width:350px){
+            .eb-m-header-brand .eb-brand-name{font-size:21px}
+            .eb-m-search-row{display:grid!important;grid-template-columns:1fr!important}
+            .eb-m-search-row>.eb-dropdown{width:100%!important;max-width:none!important;min-width:0!important}
+          }
         `}</style>
 
         {/* ─── ШАПКА ─── */}
-        <header style={{ position: 'sticky', top: 0, zIndex: 1000, background: '#fff', borderBottom: '1px solid #ECECEC' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px' }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none', color: '#1A1A1A', flex: 'none' }}>
+        <header className="eb-m-header" style={{ position: 'sticky', top: 0, zIndex: 1000, background: '#fff', borderBottom: '1px solid #ECECEC', overflow: 'hidden' }}>
+          <div className="eb-m-header-row" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px' }}>
+            <a href="/" className="eb-m-header-brand" style={{ display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none', color: '#1A1A1A', flex: 'none' }}>
               <BrandMark size={30} />
               <span className="eb-brand-name">ebookee</span>
             </a>
@@ -631,7 +647,7 @@ export default function ClientPageWeb({
           </div>
 
           {/* ─── ПОИСК + ГОРОД ─── */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <div className="eb-m-search-row" style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             <div className="eb-field" style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 9, background: '#fff', border: '1px solid #EDEAE2', borderRadius: 13, padding: '0 13px', height: 46 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flex: 'none', opacity: .5 }}><circle cx="11" cy="11" r="7" stroke="#8C8C8C" strokeWidth="2"/><path d="m20 20-3.2-3.2" stroke="#8C8C8C" strokeWidth="2" strokeLinecap="round"/></svg>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск…"
@@ -641,7 +657,7 @@ export default function ClientPageWeb({
           </div>
 
           {/* ─── ФИЛЬТРЫ: услуги + место + компактный рейтинг ─── */}
-          <div style={{ display: 'flex', gap: 8, padding: '4px 12px 0' }}>
+          <div className="eb-m-filter-row" style={{ display: 'flex', gap: 8, padding: '4px 0 0' }}>
             <FilterSelect compact style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
               value={selectedService} onChange={e => setSelectedService(e.target.value)} />
             <VisitFilter compact style={{ flex: 1.12, minWidth: 0 }} value={visitType} onChange={setVisitType}/>
@@ -679,7 +695,7 @@ export default function ClientPageWeb({
 
         {/* ─── КАРТА ВО ВЕСЬ ЭКРАН ─── */}
         {mapFull && (
-          <div style={{ position: 'fixed', inset: 0, zIndex: 2000, background: '#fff' }}>
+          <div className="eb-map-full" style={{ position: 'fixed', inset: 0, width: '100%', maxWidth: '100vw', overflow: 'hidden', zIndex: 2000, background: '#fff' }}>
             <MapContainer center={MOSCOW_CENTER} zoom={11} style={{ height: '100%', width: '100%' }} attributionControl={false}>
               <AttributionNoFlag />
               <MapFocus points={points} pointsKey={pointsKey} />
@@ -693,7 +709,7 @@ export default function ClientPageWeb({
 
             {/* Верхняя панель: выпадашки услуги + оценка + место
                 (слева отступ под зум +/-, справа — под крестик) */}
-            <div style={{ position: 'absolute', top: 'calc(12px + env(safe-area-inset-top))', left: 0, right: 0, zIndex: 520, display: 'flex', gap: 8, paddingLeft: 54, paddingRight: 66 }}>
+            <div className="eb-map-full-filters" style={{ position: 'absolute', top: 'calc(12px + env(safe-area-inset-top))', left: 0, right: 0, zIndex: 520, display: 'flex', gap: 8, paddingLeft: 54, paddingRight: 66 }}>
               <FilterSelect compact style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
                 value={selectedService} onChange={e => setSelectedService(e.target.value)} />
               <VisitFilter compact style={{ flex: 1.12, minWidth: 0 }} value={visitType} onChange={setVisitType}/>

@@ -5,6 +5,7 @@ import RegisterExecutorPage from './pages/RegisterExecutorPage'
 import ClientCabinetPage from './pages/ClientCabinetPage'
 import ExecutorSettingsPage from './pages/ExecutorSettingsPage'
 import { useEffect, useState } from 'react'
+import { Routes, Route, useParams, Navigate } from 'react-router-dom'
 import { initTelegram, getTelegramUser, syncTelegramUsername, isWeb } from './telegram'
 import { supabase } from './supabase'
 import { getSession } from './session'
@@ -12,6 +13,34 @@ import LoginPage from './pages/LoginPage'
 import LegalPage from './pages/LegalPage'
 import { LEGAL_ROUTES } from './legalDocs'
 import UiIcon from './components/UiIcon'
+
+// Обёртка: достаёт :id из адреса /master/123 и отдаёт странице как раньше — числом.
+function ExecutorRoute() {
+  const { id } = useParams()
+  return <ExecutorPage executorId={Number(id)} />
+}
+
+// Кабинет клиента: только для залогиненного. На вебе без Telegram и без сессии — сначала вход.
+// id берём ИЗ СЕССИИ, а не из адреса — чтобы нельзя было подставить чужой кабинет.
+function CabinetRoute() {
+  const tgUser = getTelegramUser()
+  const session = getSession()
+  if (!tgUser?.telegram_id && !session?.id) {
+    return <LoginPage title="Вход в кабинет" onSuccess={() => window.location.reload()} />
+  }
+  const clientId = (!tgUser?.telegram_id && session?.id) ? session.id : (tgUser?.id ?? session?.id)
+  return <ClientCabinetPage clientId={clientId} />
+}
+
+// Настройки исполнителя: только для залогиненного исполнителя. Иначе — вход как исполнитель.
+function SettingsRoute() {
+  const tgUser = getTelegramUser()
+  const session = getSession()
+  if (!tgUser?.telegram_id && session?.role !== 'executor') {
+    return <LoginPage title="Вход для исполнителей" role="executor" onSuccess={() => window.location.reload()} />
+  }
+  return <ExecutorSettingsPage />
+}
 
 function App() {
   // 'checking' пока ждём ответа БД, 'blocked' если в blocked_users, 'ok' во всех остальных случаях
@@ -29,8 +58,6 @@ function App() {
           tg_user_id: user.id,
           username: user.username ?? null,
         }).then(({ error }) => {
-          // Включённый "сенсор": раньше ошибки молча проглатывались через .then(() => {}).
-          // Если инсерт упал (RLS, constraint, сеть, что угодно) — увидим в DevTools.
           if (error) {
             console.error('[app_opens] INSERT failed:', error.message, error)
           } else {
@@ -46,7 +73,6 @@ function App() {
     const tgUser = getTelegramUser()
     const tgId = tgUser?.telegram_id
     if (!tgId) {
-      // Открыто не из Telegram (нет telegram_id) — пропускаем
       setBlockStatus('ok')
       return
     }
@@ -57,7 +83,6 @@ function App() {
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) {
-          // Ошибка запроса — пропускаем юзера (fail-safe: лучше пропустить заблокированного, чем отрезать всех)
           console.error('Block check failed:', error)
           setBlockStatus('ok')
           return
@@ -65,13 +90,6 @@ function App() {
         setBlockStatus(data ? 'blocked' : 'ok')
       })
   }, [])
-
-  // Правовые документы — единственные страницы с адресом в пути, а не в query.
-  // Отдаём их сразу: они публичные, не зависят от Telegram и проверки блокировок.
-  const legalKey = LEGAL_ROUTES[window.location.pathname.replace(/\/+$/, '')]
-  if (legalKey) {
-    return <LegalPage docKey={legalKey} />
-  }
 
   // Пока идёт проверка — не рендерим ничего (мгновение)
   if (blockStatus === 'checking') {
@@ -117,51 +135,25 @@ function App() {
     )
   }
 
-  // Дальше — обычный роутинг
-  const executorMatch = window.location.search.match(/executor=(\d+)/)
-  const isMap = window.location.search.includes('map=1')
-  const isRegister = window.location.search.includes('register=executor')
-  const isSettings = window.location.search.includes('settings=1')
-  const clientMatch = window.location.search.match(/client=(\d+)/)
-  if (isRegister) {
-    return <RegisterExecutorPage />
-  }
-  if (isSettings) {
-    const tgUser = getTelegramUser()
-    const session = getSession()
-    // Веб без Telegram и без сессии-исполнителя — сперва вход по Telegram
-    if (!tgUser?.telegram_id && session?.role !== 'executor') {
-      return <LoginPage title="Вход для исполнителей" role="executor" onSuccess={() => window.location.reload()} />
-    }
-    return <ExecutorSettingsPage />
-  }
-  if (clientMatch) {
-    const tgUser = getTelegramUser()
-    const session = getSession()
-    // На вебе без Telegram и без сессии — сперва вход
-    if (!tgUser?.telegram_id && !session?.id) {
-      return <LoginPage title="Вход в кабинет" onSuccess={() => window.location.reload()} />
-    }
-    // Веб-клиент видит СВОЙ кабинет (id из сессии), а не любой из адреса —
-    // иначе на открытом вебе можно подставить чужой ?client=…
-    const clientId = (!tgUser?.telegram_id && session?.id) ? session.id : Number(clientMatch[1])
-    return <ClientCabinetPage clientId={clientId} />
-  }
-  if (executorMatch) {
-    const tgUser = getTelegramUser()
-    const session = getSession()
-    // Веб без Telegram и без сессии-исполнителя — вход только по Telegram
-    if (!tgUser?.telegram_id && session?.role !== 'executor') {
-      return <LoginPage title="Вход для исполнителей" role="executor" onSuccess={() => window.location.reload()} />
-    }
-    return <ExecutorPage executorId={Number(executorMatch[1])} />
-  }
+  // ── Маршруты ──
+  return (
+    <Routes>
+      <Route path="/" element={<ClientPage />} />
+      <Route path="/master/:id" element={<ExecutorRoute />} />
+      <Route path="/cabinet" element={<CabinetRoute />} />
+      <Route path="/register" element={<RegisterExecutorPage />} />
+      <Route path="/settings" element={<SettingsRoute />} />
+      <Route path="/map" element={isWeb() ? <ClientPage /> : <MapPage />} />
 
-  if (isMap) {
-    return isWeb() ? <ClientPage /> : <MapPage />
-  }
+      {/* Правовые документы — по одному маршруту на каждый путь из LEGAL_ROUTES */}
+      {Object.entries(LEGAL_ROUTES).map(([path, key]) => (
+        <Route key={path} path={path} element={<LegalPage docKey={key} />} />
+      ))}
 
-  return <ClientPage />
+      {/* Всё неизвестное — на главную */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
 }
 
 export default App
