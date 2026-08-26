@@ -597,7 +597,7 @@ export default function ClientPageWeb({
             .eb-m-header-row{gap:7px!important;padding:9px 10px!important}
             .eb-m-header-row .eb-role{width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;justify-content:center;flex:none}
             .eb-m-role-text{display:none}
-            .eb-map-full-filters{top:calc(68px + env(safe-area-inset-top))!important;left:10px!important;right:10px!important;padding:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
+            .eb-map-full-filters{top:calc(12px + env(safe-area-inset-top))!important;left:0!important;right:0!important;padding-left:54px!important;padding-right:66px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
             .eb-m-filter-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 44px;gap:7px!important}
           }
           @media(max-width:350px){
