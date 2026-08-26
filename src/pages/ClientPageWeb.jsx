@@ -213,7 +213,7 @@ function RatingButton({ value, onChange, style }) {
 }
 
 function DropdownFilter({ value, onValueChange, options, style, height = 46, borderRadius = 13,
-  fontSize = 14, ariaLabel, triggerIcon, renderIcon, triggerStyle }) {
+  fontSize = 14, ariaLabel, triggerIcon, renderIcon, triggerStyle, compact = false, menuWidth }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const triggerRef = useRef(null)
@@ -246,19 +246,19 @@ function DropdownFilter({ value, onValueChange, options, style, height = 46, bor
     <div ref={ref} className="eb-dropdown" style={{ position: 'relative', flex: 'none', minWidth: 168, ...style }}>
       <button ref={triggerRef} className="eb-field eb-dropdown-trigger" type="button" aria-label={ariaLabel}
         aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(current => !current)}
-        style={{ width: '100%', height, padding: '0 13px', borderRadius, border: open ? '1px solid #D99AD0' : '1px solid #E7E3DA', background: '#fff', color: '#332A3B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize, boxShadow: open ? '0 0 0 3px rgba(155,86,210,.10)' : 'none', ...triggerStyle }}>
+        style={{ width: '100%', height, padding: compact ? '0 8px' : '0 13px', borderRadius, border: open ? '1px solid #D99AD0' : '1px solid #E7E3DA', background: '#fff', color: '#332A3B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: compact ? 5 : 8, fontSize: compact ? 12.5 : fontSize, boxShadow: open ? '0 0 0 3px rgba(155,86,210,.10)' : 'none', ...triggerStyle }}>
         {(triggerIcon || renderIcon) && <span style={{ color: '#A83293', display: 'inline-flex', alignItems: 'center', flex: 'none' }}>{triggerIcon || renderIcon(selected)}</span>}
         <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}>{selected?.label}</span>
         <UiIcon name="chevronDown" size={15} style={{ color: open ? '#9A3A9B' : '#756E77', flex: 'none', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .18s,color .18s' }}/>
       </button>
       {open && <div className="eb-dropdown-menu" role="listbox" aria-label={ariaLabel}
-        style={{ position: 'absolute', top: height + 7, left: 0, right: 0, zIndex: 1400, maxHeight: 270, overflowY: 'auto', padding: 7, borderRadius: 17, background: 'rgba(255,255,255,.98)', border: '1px solid #EBDCE8', boxShadow: '0 18px 44px rgba(72,34,64,.17)', backdropFilter: 'blur(14px)' }}>
+        style={{ position: 'absolute', top: height + 7, left: menuWidth ? 'auto' : 0, right: 0, width: menuWidth, zIndex: 1400, maxHeight: 270, overflowY: 'auto', padding: 7, borderRadius: 17, background: 'rgba(255,255,255,.98)', border: '1px solid #EBDCE8', boxShadow: '0 18px 44px rgba(72,34,64,.17)', backdropFilter: 'blur(14px)' }}>
         {options.map(option => {
           const isSelected = String(value) === String(option.v)
           return <button key={String(option.v)} className="eb-dropdown-option" data-selected={isSelected} type="button"
             role="option" aria-selected={isSelected} onClick={() => choose(option)}
-            style={{ width: '100%', minHeight: 40, padding: '9px 9px 9px 10px', border: 0, borderRadius: 12, background: '#fff', color: '#453D47', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 9, textAlign: 'left', fontSize }}>
-            {renderIcon && <span style={{ color: isSelected ? '#9A3390' : '#766E78', display: 'inline-flex', alignItems: 'center', minWidth: 36 }}>{renderIcon(option)}</span>}
+            style={{ width: '100%', minHeight: 40, padding: compact ? '8px' : '9px 9px 9px 10px', border: 0, borderRadius: 12, background: '#fff', color: '#453D47', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: compact ? 7 : 9, textAlign: 'left', fontSize: compact ? 13 : fontSize }}>
+            {renderIcon && <span style={{ color: isSelected ? '#9A3390' : '#766E78', display: 'inline-flex', alignItems: 'center', minWidth: compact ? 30 : 36 }}>{renderIcon(option)}</span>}
             <span style={{ flex: 1, minWidth: 0, lineHeight: 1.3 }}>{option.label}</span>
             <span className="eb-dropdown-check" style={{ display: 'grid', placeItems: 'center', width: 18, height: 18, flex: 'none', transition: '.15s ease' }}>
               <UiIcon name="check" size={14} strokeWidth={2.2}/>
@@ -270,11 +270,11 @@ function DropdownFilter({ value, onValueChange, options, style, height = 46, bor
   )
 }
 
-function FilterSelect({ value, onChange, options, style }) {
+function FilterSelect({ value, onChange, options, style, compact = false }) {
   const icon = options === RATING_OPTS ? 'star' : 'sparkles'
   return <DropdownFilter value={value} options={options} style={style}
     ariaLabel={options === RATING_OPTS ? 'Выберите оценку' : 'Выберите услугу'}
-    triggerIcon={<UiIcon name={icon} size={17}/>} onValueChange={next => onChange({ target: { value: next } })}/>
+    compact={compact} triggerIcon={<UiIcon name={icon} size={compact ? 14 : 17}/>} onValueChange={next => onChange({ target: { value: next } })}/>
 }
 
 function VisitGlyphs({ value, size = 17 }) {
@@ -283,9 +283,9 @@ function VisitGlyphs({ value, size = 17 }) {
   return <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2 }}><UiIcon name="car" size={size}/><UiIcon name="home" size={size}/></span>
 }
 
-function VisitFilter({ value, onChange, style }) {
+function VisitFilter({ value, onChange, style, compact = false }) {
   return <DropdownFilter value={value} onValueChange={onChange} options={VISIT_OPTS} style={style}
-    ariaLabel="Место оказания услуги" renderIcon={option => <VisitGlyphs value={option.v} size={16}/>}/>
+    compact={compact} menuWidth={compact ? 170 : undefined} ariaLabel="Место оказания услуги" renderIcon={option => <VisitGlyphs value={option.v} size={compact ? 14 : 16}/>}/>
 }
 
 function CityFilter({ cities, value, onChange, mobile = false }) {
@@ -641,9 +641,9 @@ export default function ClientPageWeb({
 
           {/* ─── ФИЛЬТРЫ: услуги + место + компактный рейтинг ─── */}
           <div style={{ display: 'flex', gap: 8, padding: '4px 12px 0' }}>
-            <FilterSelect style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
+            <FilterSelect compact style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
               value={selectedService} onChange={e => setSelectedService(e.target.value)} />
-            <VisitFilter style={{ flex: 1, minWidth: 0 }} value={visitType} onChange={setVisitType}/>
+            <VisitFilter compact style={{ flex: 1.12, minWidth: 0 }} value={visitType} onChange={setVisitType}/>
             <RatingButton value={minRating} onChange={setMinRating} />
           </div>
         </div>
@@ -693,9 +693,9 @@ export default function ClientPageWeb({
             {/* Верхняя панель: выпадашки услуги + оценка + место
                 (слева отступ под зум +/-, справа — под крестик) */}
             <div style={{ position: 'absolute', top: 'calc(12px + env(safe-area-inset-top))', left: 0, right: 0, zIndex: 520, display: 'flex', gap: 8, paddingLeft: 54, paddingRight: 66 }}>
-              <FilterSelect style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
+              <FilterSelect compact style={{ flex: 1, minWidth: 0 }} options={serviceOpts}
                 value={selectedService} onChange={e => setSelectedService(e.target.value)} />
-              <VisitFilter style={{ flex: 1, minWidth: 0 }} value={visitType} onChange={setVisitType}/>
+              <VisitFilter compact style={{ flex: 1.12, minWidth: 0 }} value={visitType} onChange={setVisitType}/>
               <RatingButton value={minRating} onChange={setMinRating} />
             </div>
 
