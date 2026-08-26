@@ -623,7 +623,7 @@ export default function ClientPageWeb({
               <span className="eb-brand-name">ebookee</span>
             </a>
             <div style={{ flex: 1 }} />
-            <Link to="/settings" className="eb-role" style={ROLE_M} aria-label="Кабинет исполнителя"><UiIcon name="user" size={16}/><span className="eb-m-role-text">Исполнитель</span></Link>
+            <Link to="/executor/schedule" className="eb-role" style={ROLE_M} aria-label="Кабинет исполнителя"><UiIcon name="user" size={16}/><span className="eb-m-role-text">Исполнитель</span></Link>
             <Link to="/cabinet" className="eb-role" style={{ ...ROLE_M, color: '#A83293', borderColor: '#EDC9E5' }} aria-label="Кабинет клиента"><UiIcon name="crown" size={16}/><span className="eb-m-role-text">Клиент</span></Link>
           </div>
         </header>
@@ -820,7 +820,7 @@ export default function ClientPageWeb({
           <CityFilter cities={cities} value={selectedCity} onChange={e => { setSelectedCity(e.target.value); localStorage.setItem('selectedCity', e.target.value) }}/>
 
           <div style={{ display: 'flex', gap: 10, flex: 'none' }}>
-          <Link to="/settings" className="eb-role" style={ROLE_BTN}><UiIcon name="user" size={19} style={{ color: '#B13A9D' }}/><span className="eb-role-label">Я исполнитель</span></Link>
+          <Link to="/executor/schedule" className="eb-role" style={ROLE_BTN}><UiIcon name="user" size={19} style={{ color: '#B13A9D' }}/><span className="eb-role-label">Я исполнитель</span></Link>
             <Link to="/cabinet" className="eb-role" style={{ ...ROLE_BTN, borderColor: '#F0D4E9' }}><UiIcon name="crown" size={19} style={{ color: '#F39A28' }}/><span className="eb-role-label">Я клиент</span></Link>
           </div>
         </div>
