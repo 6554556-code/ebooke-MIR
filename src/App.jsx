@@ -42,6 +42,17 @@ function SettingsRoute() {
   return <ExecutorSettingsPage />
 }
 
+// Кабинет исполнителя (Заявки/Расписание/Заработок). Только для залогиненного исполнителя.
+// Владелец определяется ВНУТРИ ExecutorPage из сессии/телеграма, id в адресе не нужен.
+function ExecutorCabinetRoute() {
+  const tgUser = getTelegramUser()
+  const session = getSession()
+  if (!tgUser?.telegram_id && session?.role !== 'executor') {
+    return <LoginPage title="Вход для исполнителей" role="executor" onSuccess={() => window.location.reload()} />
+  }
+  return <ExecutorPage />
+}
+
 function App() {
   // 'checking' пока ждём ответа БД, 'blocked' если в blocked_users, 'ok' во всех остальных случаях
   const [blockStatus, setBlockStatus] = useState('checking')
@@ -143,6 +154,8 @@ function App() {
       <Route path="/cabinet" element={<CabinetRoute />} />
       <Route path="/register" element={<RegisterExecutorPage />} />
       <Route path="/settings" element={<SettingsRoute />} />
+      <Route path="/executor" element={<Navigate to="/executor/schedule" replace />} />
+      <Route path="/executor/:tab" element={<ExecutorCabinetRoute />} />
       <Route path="/map" element={isWeb() ? <ClientPage /> : <MapPage />} />
 
       {/* Правовые документы — по одному маршруту на каждый путь из LEGAL_ROUTES */}
