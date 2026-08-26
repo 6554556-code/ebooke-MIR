@@ -4,7 +4,7 @@ import { getLocationFromCoords, getSubwayFromCoords } from "../geocoding.js";
 import { getTelegramUser } from '../telegram'
 import { getSession } from '../session'
 import LocationPicker from '../components/LocationPicker'
-
+import { Link } from 'react-router-dom'
 function ExecutorSettingsPage() {
   const [executor, setExecutor] = useState(null)
   const [loading, setLoading] = useState(true)
