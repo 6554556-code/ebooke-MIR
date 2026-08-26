@@ -33,7 +33,8 @@ const paths = {
   close: <><path d="m6 6 12 12M18 6 6 18"/></>,
   plus: <><path d="M12 5v14M5 12h14"/></>,
   check: <path d="m5 12 4.2 4.2L19 6.5"/>,
-  chevronDown: <path d="m6 9 6 6 6-6"/>,
+  chevronDown: <path d="m6 9 6 6 6-6"/>,  
+  tutor: <><path d="M4 4h11a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2V4Z"/><path d="M4 4a2 2 0 0 1 2-2h11v4"/><path d="M8 8h6M8 12h6"/></>,
 }
 
 export const categoryIcon = (code = '') => {
@@ -41,6 +42,7 @@ export const categoryIcon = (code = '') => {
   if (key.includes('clean')) return 'broom'
   if (key.includes('beaut') || key.includes('cosmet')) return 'beauty'
   if (key.includes('repair') || key.includes('master')) return 'tool'
+  if (key.includes('tutor') || key.includes('repet')) return 'tutor'
   if (key.includes('mass')) return 'heart'
   if (key.includes('photo')) return 'camera'
   if (key.includes('electric')) return 'bolt'

@@ -4,7 +4,7 @@ import { saveSession } from '../session'
 import { BrandMark, WebBaseStyles } from '../components/WebShell'
 import UiIcon from '../components/UiIcon'
 
-const TG_BOT = 'ebookee777_bot' // @ebookee777_bot, домен привязан в BotFather -> ebookee.app
+const TG_BOT = 'slotis_bot' // @slotis_bot, домен привязан в BotFather -> ebooke-mir.vercel.app
 
 const CSS = `
 .eblogin-screen{position:fixed;inset:0;z-index:1000;overflow:auto;background:#FCFAFC;color:#2E2731;
@@ -115,7 +115,7 @@ export default function LoginPage({ onSuccess, onBack, title = 'Вход по т
   // Поэтому вне ebookee.app скрипт не вставляем — телефон остаётся рабочим.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (window.location.hostname !== 'ebookee.app') return
+    if (window.location.hostname !== 'ebooke-mir.vercel.app') return
     const box = tgBox.current
     if (!box) return
     window.onTelegramAuth = (user) => onTgAuth(user)
