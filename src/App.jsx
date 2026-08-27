@@ -150,7 +150,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<ClientPage />} />
-      <Route path="/master/:id" element={<ExecutorRoute />} />
+      <Route path="/master/:id" element={<ClientPage />} />
       <Route path="/cabinet" element={<CabinetRoute />} />
       <Route path="/register" element={<RegisterExecutorPage />} />
       <Route path="/settings" element={<SettingsRoute />} />

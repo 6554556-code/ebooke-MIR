@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { useProfessions } from "../hooks/useProfessions.js";
 import { loadReviewsByExecutors, calculateStats } from "../reviewsUtils.js";
@@ -12,6 +13,8 @@ import ExecutorCard from '../components/ExecutorCard'
 import ClientPageWeb from './ClientPageWeb'
 
 function ClientPage() {
+  // id мастера из пути /master/:id — если открыли витрину по красивой ссылке
+  const { id: masterIdFromPath } = useParams()
   const [executors, setExecutors] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
@@ -38,6 +41,9 @@ function ClientPage() {
   // Если в URL пришёл &book=1 — после загрузки исполнителей сразу откроем бронь.
   // Инициализируем СРАЗУ из URL, чтобы не мигнуть главной перед открытием брони.
   const [pendingBookExecutorId, setPendingBookExecutorId] = useState(() => {
+    // Источник 1: красивый путь /master/:id → сразу открываем витрину
+    if (masterIdFromPath) return Number(masterIdFromPath)
+    // Источник 2: старый query ?executor_id=N&book=1 (переход с карты / «записаться снова»)
     const params = new URLSearchParams(window.location.search)
     const id = params.get('executor_id')
     return id && params.get('book') === '1' ? Number(id) : null
