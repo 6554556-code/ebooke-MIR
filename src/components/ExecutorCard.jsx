@@ -33,7 +33,7 @@ function WebExecutorCard({
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
             {prof ? <span className="eb-prof-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 999, background: '#FFF1FA', color: '#A83293', fontSize: 12, fontWeight: 650 }}>
-              <UiIcon name={categoryIcon(prof.code)} size={14} />{prof.name}
+              <UiIcon name={categoryIcon(prof.code, prof.name)} size={14} />{prof.name}
             </span> : <span />}
             {stats?.count > 0 ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
               <UiIcon name="star" size={17} style={{ color: '#F6A623', fill: '#F6A623' }} />
@@ -85,7 +85,7 @@ function WebExecutorCard({
         </div>) }
       </div> : null}
 
-      <button onClick={e => { e.stopPropagation(); onBook() }} className="eb-primary" style={{ marginTop: 16, width: '100%', height: 46, border: 0, borderRadius: 13, background: GRADIENT, color: '#fff', cursor: 'pointer', fontSize: 15, fontWeight: 700 }}>Записаться</button>
+      <button onClick={e => { e.stopPropagation(); onBook() }} className="eb-book eb-primary" style={{ marginTop: 16, width: '100%', height: 46, border: 0, borderRadius: 13, background: GRADIENT, color: '#fff', cursor: 'pointer', fontSize: 15, fontWeight: 700 }}>Записаться</button>
       {onMessage && <button onClick={e => { e.stopPropagation(); onMessage() }} style={{ marginTop: 9, width: '100%', height: 42, border: '1px solid #E9C8E1', borderRadius: 12, background: '#fff', color: '#B13A9D', cursor: 'pointer', fontSize: 14, fontWeight: 650, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}><UiIcon name="message" size={17}/>Написать</button>}
     </article>
   )

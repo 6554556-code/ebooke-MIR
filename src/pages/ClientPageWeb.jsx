@@ -37,9 +37,9 @@ const PIN_CSS = `
   .eb-pin-head{width:42px;height:42px;background:#fff;border:2px solid rgba(233,87,197,.24);border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;color:${Y};box-shadow:0 7px 18px rgba(105,37,89,.22);position:relative;transition:.18s ease}
   .eb-pin-head img{width:22px;height:22px;object-fit:contain}
   .eb-pin-head::after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:2px solid rgba(233,87,197,.24);border-bottom:2px solid rgba(233,87,197,.24);border-radius:0 0 3px 0}
-  .eb-pin-selected .eb-pin-head{width:52px;height:52px;background:linear-gradient(135deg,#E651C5,#FF9A67);border:3px solid #fff;box-shadow:0 10px 28px rgba(218,67,171,.42);transform:translateY(-3px)}
-  .eb-pin-selected .eb-pin-head svg{stroke:#fff;color:#fff}
-  .eb-pin-selected .eb-pin-head::after{background:#F174A2;border-color:#fff}
+  .eb-pin-selected .eb-pin-head{width:52px;height:52px;background:linear-gradient(100deg,#FCEAF8 0%,#FFF1DF 100%);border:2px solid #EFBEDC;box-shadow:0 10px 26px rgba(135,54,116,.24);transform:translateY(-3px);color:#8C2D7C}
+  .eb-pin-selected .eb-pin-head svg{stroke:currentColor;color:currentColor}
+  .eb-pin-selected .eb-pin-head::after{background:#FFF0E1;border-color:#EFBEDC}
 `
 
 // Компактные кнопки ролей в мобильной шапке
@@ -57,8 +57,8 @@ function MapTapCatcher({ onTap }) {
 
 
 const pinCache = new Map()
-function pinIcon(serviceCode, selected = false) {
-  const iconName = categoryIcon(serviceCode)
+function pinIcon(serviceCode, selected = false, serviceName = '') {
+  const iconName = categoryIcon(serviceCode, serviceName)
   const key = `${iconName}-${selected ? 'selected' : 'idle'}`
   if (!pinCache.has(key)) {
     pinCache.set(key, L.divIcon({
@@ -341,7 +341,7 @@ function SheetCard({ ex, prof, stats, onBook, onClose }) {
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 11 }}>
         {prof && (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: '#FFF1FA', color: '#A83293', borderRadius: 99, fontSize: 12, fontWeight: 650 }}>
-            <UiIcon name={categoryIcon(prof.code)} size={14} />{prof.name}
+            <UiIcon name={categoryIcon(prof.code, prof.name)} size={14} />{prof.name}
           </span>
         )}
         {(caps.inc || caps.out) && (
@@ -403,7 +403,7 @@ function MiniCard({ ex, prof, stats, onBook, width = 340 }) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
             {prof ? (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: '#FFF1FA', color: '#A83293', borderRadius: '99px', fontSize: '11px', whiteSpace: 'nowrap' }}>
-                <UiIcon name={categoryIcon(prof.code)} size={13}/>{prof.name}
+                <UiIcon name={categoryIcon(prof.code, prof.name)} size={13}/>{prof.name}
               </span>
             ) : <span />}
             <span style={{ whiteSpace: 'nowrap', flexShrink: 0, display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
@@ -639,7 +639,7 @@ export default function ClientPageWeb({
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <MapTapCatcher onTap={() => setSheetId(null)} />
               {withCoords.map(ex => (
-                <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, sheetId === ex.id)}
+                <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, sheetId === ex.id, profOf(ex)?.name)}
                   eventHandlers={{ click: () => setSheetId(ex.id) }} />
               ))}
             </MapContainer>
@@ -710,7 +710,7 @@ export default function ClientPageWeb({
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <MapTapCatcher onTap={() => setSheetId(null)} />
               {withCoords.map(ex => (
-                <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, sheetId === ex.id)}
+                <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, sheetId === ex.id, profOf(ex)?.name)}
                   eventHandlers={{ click: () => setSheetId(ex.id) }} />
               ))}
             </MapContainer>
@@ -784,7 +784,8 @@ export default function ClientPageWeb({
         .eb-cat:hover{background:#F4F2ED}
         .eb-role:hover{background:#EEEBE4 !important}
         .eb-chip:hover{transform:translateY(-1px)}
-        .eb-book:hover{background:${GRADIENT} !important}
+        .eb-book{background:${GRADIENT_SOFT}!important;color:#5D294F!important;border:1px solid #F0C7E5!important;box-shadow:0 8px 22px rgba(124,49,105,.10)!important}
+        .eb-book:hover{background:linear-gradient(100deg,rgba(230,81,197,.16),rgba(255,179,66,.23))!important;border-color:#E7ADD3!important;box-shadow:0 11px 25px rgba(124,49,105,.15)!important}
         .eb-track::-webkit-scrollbar{display:none}
         .eb-arrow:hover{background:#F7F5F0 !important}
         .eb-arrow{user-select:none}
@@ -842,7 +843,7 @@ export default function ClientPageWeb({
               return (
                 <button key={p.code} className="eb-cat" data-active={active} onClick={() => setSelectedService(p.code)}
                   style={{ display: 'flex', alignItems: 'center', gap: 13, width: '100%', textAlign: 'left', padding: '13px 15px', borderRadius: 14, fontSize: 14.5, fontWeight: 550, color: '#2E2731', border: '1px solid transparent', cursor: 'pointer', background: 'transparent' }}>
-                  <UiIcon name={categoryIcon(p.code)} size={20} style={{ width: 23 }}/><span>{p.name}</span>
+                  <UiIcon name={categoryIcon(p.code, p.name)} size={20} style={{ width: 23 }}/><span>{p.name}</span>
                 </button>
               )
             })}
@@ -897,7 +898,7 @@ export default function ClientPageWeb({
                       <MapFocus points={points} pointsKey={pointsKey} />
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                       {withCoords.map(ex => (
-                        <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, selected?.id === ex.id)}
+                        <Marker key={ex.id} position={[ex.latitude, ex.longitude]} icon={pinIcon(ex.service_type, selected?.id === ex.id, profOf(ex)?.name)}
                           eventHandlers={{ click: () => setSelectedId(ex.id) }}>
                           <Popup>
                             <div style={{ minWidth: 130, textAlign: 'center' }}>

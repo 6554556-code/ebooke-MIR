@@ -17,13 +17,14 @@ const paths = {
   verified: <><path d="m12 2 2.2 2 3-.2.8 2.8 2.5 1.6-1.2 2.8 1.2 2.8-2.5 1.6-.8 2.8-3-.2-2.2 2-2.2-2-3 .2-.8-2.8-2.5-1.6L4.7 11 3.5 8.2 6 6.6l.8-2.8 3 .2L12 2Z"/><path d="m8.5 11.5 2.2 2.2 4.8-5"/></>,
   sparkles: <><path d="M12 2c.5 3.8 2.2 5.5 6 6-3.8.5-5.5 2.2-6 6-.5-3.8-2.2-5.5-6-6 3.8-.5 5.5-2.2 6-6Z"/><path d="M19 14c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></>,
   broom: <><path d="m15 3-5 11"/><path d="M8.5 12.5c-3 1-5 3.5-5.5 7.5 4 .8 7.5-.2 9.5-3.5l-4-4Z"/></>,
-  beauty: <><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></>,
-  tool: <path d="M14 6a5 5 0 0 0-6.4 6.4L3 17l4 4 4.6-4.6A5 5 0 0 0 18 10l-3 3-4-4 3-3Z"/>,
+  beauty: <><path d="M2.5 12s3.6-5.4 9.5-5.4 9.5 5.4 9.5 5.4-3.6 5.4-9.5 5.4S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3.5"/><path d="M5 6 3.7 4.3M8.2 4.8 7.5 2.6M12 4.3V2M15.8 4.8l.7-2.2M19 6l1.3-1.7"/></>,
+  tool: <><path d="M5 16v-3.2A7 7 0 0 1 9 6.5M15 6.5a7 7 0 0 1 4 6.3V16"/><path d="M9 12V6.2A1.2 1.2 0 0 1 10.2 5h3.6A1.2 1.2 0 0 1 15 6.2V12"/><path d="M4 16h16a2 2 0 0 1 0 4H4a2 2 0 0 1 0-4Z"/></>,
   heart: <path d="M20.8 5.8a5.5 5.5 0 0 0-7.8 0L12 6.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/>,
   camera: <><path d="M4 7h4l2-3h4l2 3h4v13H4V7Z"/><circle cx="12" cy="13" r="4"/></>,
   bolt: <path d="m13 2-8 12h6l-1 8 9-13h-6V2Z"/>,
   activity: <><path d="M3 12h4l2-7 4 14 2-7h6"/></>,
-  child: <><circle cx="12" cy="8" r="4"/><path d="M5 21c.8-4.7 3.1-7 7-7s6.2 2.3 7 7"/><path d="M8 5 6 3M16 5l2-2"/></>,
+  child: <><circle cx="12" cy="3.5" r="2"/><rect x="8.5" y="6.5" width="7" height="3.5" rx="1.75"/><rect x="7" y="10" width="10" height="4" rx="2"/><rect x="5.5" y="14" width="13" height="4" rx="2"/><rect x="4" y="18" width="16" height="4" rx="2"/></>,
+  dog: <><ellipse cx="12" cy="12" rx="6" ry="8"/><path d="M6.5 7.2C4 6.4 2.5 8.1 2.5 11c0 3 1.6 4.8 4.1 4.2M17.5 7.2C20 6.4 21.5 8.1 21.5 11c0 3-1.6 4.8-4.1 4.2"/><circle cx="9.7" cy="10" r=".65" fill="currentColor" stroke="none"/><circle cx="14.3" cy="10" r=".65" fill="currentColor" stroke="none"/><path d="M10.3 13h3.4L12 14.5 10.3 13Z" fill="currentColor"/><path d="M12 14.5v1.2M12 15.7c-1.5 2-3.1 1.4-3.5.2M12 15.7c1.5 2 3.1 1.4 3.5.2"/></>,
   paw: <><circle cx="7" cy="8" r="2"/><circle cx="17" cy="8" r="2"/><circle cx="4" cy="13" r="2"/><circle cx="20" cy="13" r="2"/><path d="M8 20c-2-1.5-1-5 1-6.5 1.7-1.3 4.3-1.3 6 0 2 1.5 3 5 1 6.5-2 1.5-6 1.5-8 0Z"/></>,
   arrow: <path d="m9 18 6-6-6-6"/>,
   message: <><path d="M21 12a8 8 0 0 1-8 8H5l-3 2 1-5a9 9 0 1 1 18-5Z"/></>,
@@ -46,18 +47,18 @@ const paths = {
   tutor: <><path d="M4 4h11a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2V4Z"/><path d="M4 4a2 2 0 0 1 2-2h11v4"/><path d="M8 8h6M8 12h6"/></>,
 }
 
-export const categoryIcon = (code = '') => {
-  const key = String(code).toLowerCase()
+export const categoryIcon = (code = '', label = '') => {
+  const key = `${String(code)} ${String(label)}`.toLowerCase()
   if (key.includes('clean')) return 'broom'
-  if (key.includes('beaut') || key.includes('cosmet')) return 'beauty'
-  if (key.includes('repair') || key.includes('master')) return 'tool'
+  if (key.includes('beaut') || key.includes('cosmet') || key.includes('salon') || key.includes('makeup') || key.includes('nail') || key.includes('hair') || key.includes('krasot') || key.includes('красот')) return 'beauty'
+  if (key.includes('repair') || key.includes('master') || key.includes('handyman') || key.includes('fix') || key.includes('build') || key.includes('мастер')) return 'tool'
   if (key.includes('tutor') || key.includes('repet')) return 'tutor'
   if (key.includes('mass')) return 'heart'
   if (key.includes('photo')) return 'camera'
   if (key.includes('electric')) return 'bolt'
   if (key.includes('train') || key.includes('sport')) return 'activity'
-  if (key.includes('child') || key.includes('kid')) return 'child'
-  if (key.includes('animal') || key.includes('pet')) return 'paw'
+  if (key.includes('child') || key.includes('kid') || key.includes('baby') || key.includes('nanny') || key.includes('det') || key.includes('nyan') || key.includes('дет') || key.includes('реб')) return 'child'
+  if (key.includes('animal') || key.includes('pet') || key.includes('dog') || key.includes('vet') || key.includes('groom') || key.includes('zhivot') || key.includes('sobak') || key.includes('живот') || key.includes('собак')) return 'dog'
   return 'sparkles'
 }
 

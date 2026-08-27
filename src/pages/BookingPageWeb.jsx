@@ -205,7 +205,7 @@ export default function BookingPageWeb({
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
                       {prof && (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', background: '#FFF1FA', color: '#A83293', borderRadius: 99, fontSize: 13, fontWeight: 650, whiteSpace: 'nowrap' }}>
-                          <UiIcon name={categoryIcon(prof.code)} size={14}/>{prof.name}
+                          <UiIcon name={categoryIcon(prof.code, prof.name)} size={14}/>{prof.name}
                         </span>
                       )}
                       {stats && stats.alwaysOnTime && (
