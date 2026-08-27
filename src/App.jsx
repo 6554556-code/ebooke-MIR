@@ -11,6 +11,7 @@ import { supabase } from './supabase'
 import { getSession } from './session'
 import LoginPage from './pages/LoginPage'
 import LegalPage from './pages/LegalPage'
+import BookingRoute from './pages/BookingRoute'
 import { LEGAL_ROUTES } from './legalDocs'
 import UiIcon from './components/UiIcon'
 
@@ -151,6 +152,7 @@ function App() {
     <Routes>
       <Route path="/" element={<ClientPage />} />
       <Route path="/master/:id" element={<ExecutorRoute />} />
+      <Route path="/master/:id/booking" element={<BookingRoute />} />
       <Route path="/cabinet" element={<CabinetRoute />} />
       <Route path="/register" element={<RegisterExecutorPage />} />
       <Route path="/settings" element={<SettingsRoute />} />
