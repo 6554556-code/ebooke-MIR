@@ -5,6 +5,18 @@ import { getTelegramUser } from '../telegram'
 import { getSession } from '../session'
 import LocationPicker from '../components/LocationPicker'
 import { Link } from 'react-router-dom'
+import CabinetBaseStyles, { CabinetSelect } from '../components/CabinetShell'
+import { BrandMark } from '../components/WebShell'
+import UiIcon from '../components/UiIcon'
+
+const TIMEZONE_OPTIONS = [
+  ['Europe/Kaliningrad', 'Калининград (МСК-1)'], ['Europe/Moscow', 'Москва (МСК)'],
+  ['Europe/Samara', 'Самара (МСК+1)'], ['Asia/Yekaterinburg', 'Екатеринбург (МСК+2)'],
+  ['Asia/Omsk', 'Омск (МСК+3)'], ['Asia/Krasnoyarsk', 'Красноярск (МСК+4)'],
+  ['Asia/Irkutsk', 'Иркутск (МСК+5)'], ['Asia/Yakutsk', 'Якутск (МСК+6)'],
+  ['Asia/Vladivostok', 'Владивосток (МСК+7)'], ['Asia/Magadan', 'Магадан (МСК+8)'],
+  ['Asia/Kamchatka', 'Камчатка (МСК+9)'],
+].map(([value, label]) => ({ value, label }))
 function ExecutorSettingsPage() {
   const [executor, setExecutor] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -315,7 +327,7 @@ for (const s of group) {
       if (avatarPreview) URL.revokeObjectURL(avatarPreview)
       setAvatarBlob(blob)
       setAvatarPreview(URL.createObjectURL(blob))
-    } catch (err) {
+    } catch {
       alert('Не удалось прочитать изображение. Выберите фото в формате JPG или PNG.')
     }
   }
@@ -487,24 +499,27 @@ for (const s of group) {
     const parts = [loc.city, subway].filter(Boolean).join(' · ')
     alert('Точка сохранена ✅' + (parts ? '\n' + parts : ''))
   }
-  if (loading) return <p style={{ textAlign: 'center', padding: '40px' }}>Загрузка...</p>
-  if (!executor) return <p style={{ textAlign: 'center', padding: '40px' }}>Профиль исполнителя не найден</p>
+  if (loading) return <div className="eb-web eb-cabinet"><CabinetBaseStyles/><div className="eb-cab-card eb-loading-card">Загружаем настройки…</div></div>
+  if (!executor) return <div className="eb-web eb-cabinet"><CabinetBaseStyles/><div className="eb-cab-card eb-cab-empty" style={{ maxWidth: 500, margin: '40px auto' }}><span className="eb-cab-empty-icon"><UiIcon name="user" size={25}/></span><strong>Профиль исполнителя не найден</strong><Link to="/executor/schedule" className="eb-cab-secondary" style={{ marginTop: 16, padding: '10px 16px', textDecoration: 'none' }}>Вернуться в кабинет</Link></div></div>
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '16px' }}>
-      
-      <div style={{ marginBottom: '12px' }}>
-      <Link to="/executor/schedule" style={{ fontSize: '14px', color: '#2481cc', textDecoration: 'none' }}>
-          ← Назад в кабинет
-        </Link>
-      </div>
-      <h2 style={{ textAlign: 'center' }}>⚙️ Настройки профиля</h2>
-      <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-      <h3 style={{ marginTop: 0 }}>О себе</h3>
+    <div className="eb-web eb-cabinet eb-settings-cabinet">
+      <CabinetBaseStyles />
+      <div className="eb-cabinet-inner">
+        <nav className="eb-cab-nav">
+          <span className="eb-cab-brand"><BrandMark size={31}/><span className="eb-brand-name">ebookee</span></span>
+          <Link to="/executor/schedule" className="eb-cab-nav-action"><UiIcon name="arrow" size={16} style={{ transform: 'rotate(180deg)' }}/><span className="eb-cab-action-label">Назад в кабинет</span></Link>
+        </nav>
+        <div className="eb-cab-title-row">
+          <span className="eb-cab-title-icon"><UiIcon name="settings" size={23}/></span>
+          <div><h2 className="eb-cab-title">Настройки профиля</h2><p className="eb-cab-subtitle">Профиль, график работы и услуги</p></div>
+        </div>
+      <div className="eb-cab-card eb-settings-section">
+      <h3><UiIcon name="user" size={20}/>О себе</h3>
 
 {/* Аватар: круглое фото + превью с подтверждением */}
 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
-  <div style={{
+  <div className="eb-avatar-shell" style={{
     width: '96px', height: '96px', borderRadius: '50%', overflow: 'hidden',
     background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center',
     border: '2px solid #e0e0e0', marginBottom: '8px'
@@ -512,7 +527,7 @@ for (const s of group) {
     {(avatarPreview || avatarUrl) ? (
       <img src={avatarPreview || avatarUrl} alt="Фото" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     ) : (
-      <span style={{ fontSize: '36px', color: '#bbb' }}>📷</span>
+      <UiIcon name="camera" size={34}/>
     )}
   </div>
 
@@ -522,17 +537,19 @@ for (const s of group) {
       <button
         onClick={handleAvatarConfirm}
         disabled={uploadingAvatar}
+        className="eb-cab-primary"
         style={{
           cursor: uploadingAvatar ? 'wait' : 'pointer', fontSize: '13px',
           padding: '6px 14px', borderRadius: '8px', border: 'none',
           background: '#16a34a', color: 'white'
         }}
       >
-        {uploadingAvatar ? 'Сохраняю...' : '✓ Сохранить фото'}
+        <UiIcon name="check" size={15}/>{uploadingAvatar ? 'Сохраняю...' : 'Сохранить фото'}
       </button>
       <button
         onClick={handleAvatarCancel}
         disabled={uploadingAvatar}
+        className="eb-cab-secondary"
         style={{
           cursor: 'pointer', fontSize: '13px',
           padding: '6px 14px', borderRadius: '8px',
@@ -543,7 +560,7 @@ for (const s of group) {
       </button>
     </div>
   ) : (
-    <label style={{
+    <label className="eb-cab-secondary" style={{
       cursor: 'pointer', fontSize: '13px', color: '#2481cc',
       padding: '6px 12px', border: '1px solid #2481cc', borderRadius: '8px'
     }}>
@@ -581,6 +598,7 @@ for (const s of group) {
 
         <button
           onClick={() => setAdvancedOpen(!advancedOpen)}
+          className="eb-settings-toggle"
           style={{
             width: '100%',
             marginTop: '12px',
@@ -594,7 +612,7 @@ for (const s of group) {
             textAlign: 'left',
           }}
         >
-          {advancedOpen ? '▼' : '▶'} Подробнее
+          <span>Подробнее</span><UiIcon name="chevronDown" size={16} style={{ transform: advancedOpen ? 'rotate(180deg)' : 'none' }}/>
         </button>
 
         {advancedOpen && (
@@ -621,29 +639,14 @@ for (const s of group) {
             </div>
 
             <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', color: '#666' }}>Часовой пояс</label>
-            <select
-              value={timezone}
-              onChange={e => setTimezone(e.target.value)}
-              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', marginBottom: '12px', boxSizing: 'border-box', background: 'white' }}
-            >
-              <option value="Europe/Kaliningrad">Калининград (МСК-1)</option>
-              <option value="Europe/Moscow">Москва (МСК)</option>
-              <option value="Europe/Samara">Самара (МСК+1)</option>
-              <option value="Asia/Yekaterinburg">Екатеринбург (МСК+2)</option>
-              <option value="Asia/Omsk">Омск (МСК+3)</option>
-              <option value="Asia/Krasnoyarsk">Красноярск (МСК+4)</option>
-              <option value="Asia/Irkutsk">Иркутск (МСК+5)</option>
-              <option value="Asia/Yakutsk">Якутск (МСК+6)</option>
-              <option value="Asia/Vladivostok">Владивосток (МСК+7)</option>
-              <option value="Asia/Magadan">Магадан (МСК+8)</option>
-              <option value="Asia/Kamchatka">Камчатка (МСК+9)</option>
-            </select>
+            <CabinetSelect value={timezone} onChange={e => setTimezone(e.target.value)} options={TIMEZONE_OPTIONS} ariaLabel="Часовой пояс" />
           </div>
         )}
 
         <button
           onClick={handleSaveAbout}
           disabled={savingAbout}
+          className="eb-cab-primary"
           style={{
             width: '100%', marginTop: '16px', padding: '12px', borderRadius: '8px', border: 'none',
             background: savingAbout ? '#9ca3af' : '#2481cc', color: 'white', fontSize: '15px',
@@ -655,13 +658,14 @@ for (const s of group) {
       </div>
 
       {/* Отдельный блок: точка на карте. Меняется редко, сохраняется отдельной кнопкой. */}
-      <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '16px' }}>
+      <div className="eb-cab-card eb-settings-section">
         <div
           onClick={() => setMapOpen(!mapOpen)}
+          className="eb-settings-collapsible"
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
         >
-          <h3 style={{ margin: 0 }}>📍 Вы на карте</h3>
-          <span style={{ color: '#2481cc', fontSize: '14px' }}>{mapOpen ? '▼ Свернуть' : '▶ Открыть'}</span>
+          <h3><UiIcon name="pin" size={20}/>Вы на карте</h3>
+          <span style={{ color: '#943184', fontSize: '13px', display: 'flex', alignItems: 'center', gap: 5 }}>{mapOpen ? 'Свернуть' : 'Открыть'}<UiIcon name="chevronDown" size={15} style={{ transform: mapOpen ? 'rotate(180deg)' : 'none' }}/></span>
         </div>
 
         {mapOpen && (
@@ -670,14 +674,14 @@ for (const s of group) {
               Это место, откуда вы выезжаете или принимаете клиентов. По нему мы определяем ваш город и ближайшее метро.
               Меняйте только при переезде.
             </p>
-            <LocationPicker
-              latitude={latitude}
-              longitude={longitude}
-              onChange={(lat, lng) => {
-                setLatitude(lat)
-                setLongitude(lng)
-              }}
-            />
+            <div className="eb-settings-map-wrap"><LocationPicker
+                latitude={latitude}
+                longitude={longitude}
+                onChange={(lat, lng) => {
+                  setLatitude(lat)
+                  setLongitude(lng)
+                }}
+              /></div>
             <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
               {(latitude !== '' && longitude !== '' && latitude != null && longitude != null)
                 ? `Координаты: ${Number(latitude).toFixed(5)}, ${Number(longitude).toFixed(5)}`
@@ -686,13 +690,14 @@ for (const s of group) {
 
             {savingLocation && (
               <p style={{ fontSize: '13px', color: '#2481cc', margin: '12px 0 0', textAlign: 'center' }}>
-                ⏳ Определяю город и метро… это может занять до 20 секунд, не закрывайте страницу
+                Определяю город и метро… это может занять до 20 секунд, не закрывайте страницу
               </p>
             )}
 
             <button
               onClick={handleSaveLocation}
               disabled={savingLocation}
+              className="eb-cab-primary"
               style={{
                 marginTop: '12px',
                 width: '100%',
@@ -711,8 +716,8 @@ for (const s of group) {
         )}
       </div>
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '16px' }}>
-        <h3 style={{ marginTop: 0 }}>График работы</h3>
+      <div className="eb-cab-card eb-settings-section">
+        <h3><UiIcon name="calendar" size={20}/>График работы</h3>
 
         <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
           <div style={{ flex: 1 }}>
@@ -736,7 +741,7 @@ for (const s of group) {
         </div>
 
         <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#666' }}>Рабочие дни</label>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <div className="eb-day-list">
           {[
             { num: 1, label: 'Пн' },
             { num: 2, label: 'Вт' },
@@ -748,6 +753,8 @@ for (const s of group) {
           ].map(day => (
             <button
               key={day.num}
+              className="eb-day-choice"
+              data-active={workDays.includes(day.num)}
               onClick={() => {
                 if (workDays.includes(day.num)) {
                   setWorkDays(workDays.filter(d => d !== day.num))
@@ -772,6 +779,7 @@ for (const s of group) {
         <button
           onClick={handleSaveSchedule}
           disabled={savingSchedule}
+          className="eb-cab-primary"
           style={{
             width: '100%', marginTop: '16px', padding: '12px', borderRadius: '8px', border: 'none',
             background: savingSchedule ? '#9ca3af' : '#2481cc', color: 'white', fontSize: '15px',
@@ -782,8 +790,8 @@ for (const s of group) {
         </button>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '16px' }}>
-        <h3 style={{ marginTop: 0 }}>Перерывы и дорога</h3>
+      <div className="eb-cab-card eb-settings-section">
+        <h3><UiIcon name="clock" size={20}/>Перерывы и дорога</h3>
 
         <div style={{ display: 'flex', gap: '12px' }}>
           <div style={{ flex: 1 }}>
@@ -797,7 +805,7 @@ for (const s of group) {
               onChange={e => setBufferTime(e.target.value)}
               style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', boxSizing: 'border-box' }}
             />
-            <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
+            <div className="eb-settings-note" style={{ marginTop: '4px' }}>
               Передышка между заказами
             </div>
           </div>
@@ -812,7 +820,7 @@ for (const s of group) {
               onChange={e => setTravelTime(e.target.value)}
               style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', boxSizing: 'border-box' }}
             />
-            <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
+            <div className="eb-settings-note" style={{ marginTop: '4px' }}>
               Учитывается только для выездных заказов
             </div>
           </div>
@@ -821,6 +829,7 @@ for (const s of group) {
         <button
           onClick={handleSaveBreaks}
           disabled={savingBreaks}
+          className="eb-cab-primary"
           style={{
             width: '100%', marginTop: '16px', padding: '12px', borderRadius: '8px', border: 'none',
             background: savingBreaks ? '#9ca3af' : '#2481cc', color: 'white', fontSize: '15px',
@@ -831,22 +840,24 @@ for (const s of group) {
         </button>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '16px' }}>
-        <h3 style={{ marginTop: 0 }}>Услуги</h3>
+      <div className="eb-cab-card eb-settings-section">
+        <h3><UiIcon name="sparkles" size={20}/>Услуги</h3>
 
         {services.filter(s => s.is_main && !s.is_archived).length === 0 && (
           <p style={{ color: '#666' }}>Услуг пока нет</p>
         )}
 
 {services.filter(s => s.is_main && !s.is_archived).map((main, mainIndex) => (
-          <div key={main.id} style={{ border: '1px solid #e0e0e0', borderRadius: '10px', padding: '12px', marginBottom: '12px', background: '#f7f9fc' }}>
+          <div key={main.id} className="eb-service-editor" style={{ border: '1px solid #e0e0e0', borderRadius: '10px', padding: '12px', marginBottom: '12px', background: '#f7f9fc' }}>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2481cc', textTransform: 'uppercase' }}>
+            <div className="eb-service-editor-head">
+              <div className="eb-service-kicker">
                 {mainIndex + 1}. Основная услуга
               </div>
               <button
                 onClick={() => deleteService(main)}
+                className="eb-icon-button"
+                aria-label="Удалить услугу"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -856,7 +867,7 @@ for (const s of group) {
                   padding: '0 4px',
                 }}
               >
-                ✕
+                <UiIcon name="close" size={16}/>
               </button>
             </div>
             <input
@@ -888,6 +899,8 @@ for (const s of group) {
             <div style={{ display: 'flex', gap: '8px', marginTop: '10px', justifyContent: 'center' }}>
               <button
                 onClick={() => toggleLocation(main, 'incall')}
+                className="eb-location-choice"
+                data-active={main.location_type === 'incall' || main.location_type === 'both'}
                 style={{
                   padding: '5px 14px',
                   fontSize: '13px',
@@ -898,10 +911,12 @@ for (const s of group) {
                   cursor: 'pointer',
                 }}
               >
-                🏠 У меня
+                <UiIcon name="home" size={15}/>У меня
               </button>
               <button
                 onClick={() => toggleLocation(main, 'outcall')}
+                className="eb-location-choice"
+                data-active={main.location_type === 'outcall' || main.location_type === 'both'}
                 style={{
                   padding: '5px 14px',
                   fontSize: '13px',
@@ -912,19 +927,21 @@ for (const s of group) {
                   cursor: 'pointer',
                 }}
               >
-                🚗 Выезд
+                <UiIcon name="car" size={15}/>Выезд
               </button>
             </div>
                   
             {/* Допуслуги, привязанные к этой основной */}
             {services.filter(s => s.parent_service_id === main.id && !s.is_archived).map((sub, subIndex) => (
-              <div key={sub.id} style={{ marginTop: '10px', paddingLeft: '12px', borderLeft: '2px solid #ddd' }}>
+              <div key={sub.id} className="eb-service-sub" style={{ marginTop: '10px', paddingLeft: '12px', borderLeft: '2px solid #ddd' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase' }}>
                     Дополнительная услуга {subIndex + 1}
                   </div>
                   <button
                     onClick={() => deleteService(sub)}
+                    className="eb-icon-button"
+                    aria-label="Удалить дополнительную услугу"
                     style={{
                       background: 'none',
                       border: 'none',
@@ -934,7 +951,7 @@ for (const s of group) {
                       padding: '0 4px',
                     }}
                   >
-                    ✕
+                    <UiIcon name="close" size={15}/>
                   </button>
                 </div>
                 <input
@@ -968,6 +985,7 @@ for (const s of group) {
 
             <button
               onClick={() => addSubService(main)}
+              className="eb-cab-secondary"
               style={{
                 width: '100%',
                 marginTop: '10px',
@@ -980,13 +998,13 @@ for (const s of group) {
                 cursor: 'pointer',
               }}
             >
-              + Добавить дополнительную услугу
+              <UiIcon name="plus" size={15}/>Добавить дополнительную услугу
             </button>
 
             <button
               onClick={() => saveServiceGroup(main)}
-            
               disabled={savingServiceId === main.id}
+              className="eb-cab-primary"
               style={{
                 width: '100%',
                 marginTop: '12px',
@@ -999,13 +1017,14 @@ for (const s of group) {
                 cursor: savingServiceId === main.id ? 'default' : 'pointer',
               }}
             >
-              {savingServiceId === main.id ? 'Сохраняю...' : '💾 Сохранить услугу'}
+              <UiIcon name={savingServiceId === main.id ? 'refresh' : 'check'} size={16}/>{savingServiceId === main.id ? 'Сохраняю...' : 'Сохранить услугу'}
             </button>
           </div>
         ))}
 
         <button
           onClick={addMainService}
+          className="eb-cab-secondary"
           style={{
             width: '100%',
             marginTop: '12px',
@@ -1019,14 +1038,15 @@ for (const s of group) {
             cursor: 'pointer',
           }}
         >
-          + Добавить основную услугу
+          <UiIcon name="plus" size={16}/>Добавить основную услугу
         </button>
       </div>
       {/* Архив */}
       {services.some(s => s.is_archived) && (
-        <div style={{ marginTop: '16px' }}>
+        <div className="eb-cab-card eb-settings-section">
           <button
             onClick={() => setArchiveOpen(!archiveOpen)}
+            className="eb-settings-toggle"
             style={{
               width: '100%',
               padding: '10px',
@@ -1039,7 +1059,7 @@ for (const s of group) {
               textAlign: 'left',
             }}
           >
-            {archiveOpen ? '▼' : '▶'} Архив ({services.filter(s => s.is_archived).length})
+            <span>Архив ({services.filter(s => s.is_archived).length})</span><UiIcon name="chevronDown" size={16} style={{ transform: archiveOpen ? 'rotate(180deg)' : 'none' }}/>
           </button>
 
           {archiveOpen && (
@@ -1054,6 +1074,7 @@ for (const s of group) {
                   </div>
                   <button
                     onClick={() => restoreService(s)}
+                    className="eb-cab-secondary"
                     style={{
                       padding: '6px 12px',
                       borderRadius: '999px',
@@ -1064,7 +1085,7 @@ for (const s of group) {
                       cursor: 'pointer',
                     }}
                   >
-                    ↩ Восстановить
+                    <UiIcon name="refresh" size={14}/>Восстановить
                   </button>
                 </div>
               ))}
@@ -1072,6 +1093,7 @@ for (const s of group) {
           )}
         </div>
       )}
+      </div>
     </div>
   )
 }

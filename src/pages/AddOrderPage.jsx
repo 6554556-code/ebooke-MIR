@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
-import { hasOverlap, generateSlots, findNearestSlot } from '../utils/slotGenerator'
+import { hasOverlap, findNearestSlot } from '../utils/slotGenerator'
+import CabinetBaseStyles from '../components/CabinetShell'
+import { BrandMark } from '../components/WebShell'
+import UiIcon from '../components/UiIcon'
 
 function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack, onSuccess }) {
   const [name, setName] = useState('')
@@ -232,13 +235,19 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
         await createOrder(name, phone, fullServiceName, scheduledAt)
       }
       return (
-        <div style={{ padding: '16px', maxWidth: '600px', margin: '0 auto' }}>
+        <div className="eb-web eb-cabinet eb-add-order">
+          <CabinetBaseStyles />
+          <div className="eb-cabinet-inner">
+            <nav className="eb-cab-nav">
+              <span className="eb-cab-brand"><BrandMark size={31}/><span className="eb-brand-name">ebookee</span></span>
+              <button type="button" onClick={onBack} className="eb-cab-nav-action"><UiIcon name="arrow" size={16} style={{ transform: 'rotate(180deg)' }}/><span className="eb-cab-action-label">Назад в кабинет</span></button>
+            </nav>
     
           {/* Модалка пересечения */}
           {overlapModal && (
-            <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-              <div style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '340px', width: '100%' }}>
-                <h3 style={{ margin: '0 0 8px' }}>⚠️ Время занято</h3>
+            <div className="eb-cab-modal-backdrop" style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+              <div className="eb-cab-modal" style={{ padding: '22px', maxWidth: '360px', width: '100%' }}>
+                <h3 style={{ margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}><UiIcon name="clock" size={20}/> Время занято</h3>
                 <p style={{ margin: '0 0 16px', fontSize: '14px', color: '#666' }}>
                   Это время пересекается с другим заказом или перерывом.
                 </p>
@@ -253,9 +262,10 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
                         : selectedService.name
                         await createOrder(name, phone, fullServiceName, new Date(overlapModal.nearest.start))
                     }}
-                    style={{ width: '100%', padding: '12px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}
+                    className="eb-cab-primary"
+                    style={{ width: '100%', padding: '12px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}
                   >
-                    ✅ Забронировать на {overlapModal.nearest.label}
+                    <UiIcon name="check" size={16}/> Забронировать на {overlapModal.nearest.label}
                   </button>
                 ) : (
                   <p style={{ fontSize: '13px', color: '#888', marginBottom: '8px' }}>Свободного времени в этот день нет</p>
@@ -270,43 +280,36 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
                       : selectedService.name
                       await createOrder(name, phone, fullServiceName, overlapModal.scheduledAt)
                   }}
-                  style={{ width: '100%', padding: '12px', background: 'white', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}
+                  className="eb-cab-danger"
+                  style={{ width: '100%', padding: '12px', fontSize: '14px', cursor: 'pointer', marginBottom: '8px' }}
                 >
                   Всё равно создать на это время
                 </button>
     
                 <button
                   onClick={() => setOverlapModal(null)}
-                  style={{ width: '100%', padding: '12px', background: 'white', color: '#666', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px', cursor: 'pointer' }}
+                  className="eb-cab-secondary"
+                  style={{ width: '100%', padding: '12px', fontSize: '14px', cursor: 'pointer' }}
                 >
                   Отмена
                 </button>
               </div>
             </div>
           )}
-      <button
-        onClick={onBack}
-        style={{
-          background: 'none',
-          border: 'none',
-          fontSize: '16px',
-          cursor: 'pointer',
-          marginBottom: '16px',
-          color: '#2481cc'
-        }}
-      >
-        ← Назад
-      </button>
-
-      <h2 style={{ marginTop: 0 }}>Новая заявка</h2>
+      <div className="eb-cab-title-row">
+        <span className="eb-cab-title-icon"><UiIcon name="clipboard" size={23}/></span>
+        <div><h2 className="eb-cab-title">Новая заявка</h2><p className="eb-cab-subtitle">Добавьте клиента в расписание вручную</p></div>
+      </div>
+      <main className="eb-cab-card eb-cab-form-card">
 
       {/* Дата и время */}
-      <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Дата и время</p>
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+      <p className="eb-cab-section-title"><UiIcon name="calendar" size={16}/>Дата и время</p>
+      <div className="eb-cab-form-grid">
         <input
           type="date"
           value={selectedDate}
           onChange={e => setSelectedDate(e.target.value)}
+          className="eb-cab-field"
           style={{
             flex: 1,
             minWidth: 0,
@@ -321,6 +324,7 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
           type="time"
           value={selectedTime}
           onChange={e => setSelectedTime(e.target.value)}
+          className="eb-cab-field"
           style={{
             flex: 1,
             minWidth: 0,
@@ -334,11 +338,11 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
       </div>
 
       {/* Тип визита */}
-      <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Тип визита</p>
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+      <p className="eb-cab-section-title">Тип визита</p>
+      <div className="eb-visit-options">
       {[
-          { id: 'outcall', label: '🚗 Выезд' },
-          { id: 'incall', label: '🏠 Приём' },
+          { id: 'outcall', label: 'Выезд', icon: 'car' },
+          { id: 'incall', label: 'Приём', icon: 'home' },
         ].map(t => {
           const disabled =
             t.id === 'outcall' && selectedService?.location_type === 'incall' ||
@@ -347,6 +351,9 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
             <button
               key={t.id}
               onClick={() => !disabled && setLocationType(t.id)}
+              disabled={disabled}
+              className="eb-visit-choice"
+              data-active={locationType === t.id}
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
@@ -358,19 +365,21 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
                 opacity: disabled ? 0.5 : 1
               }}
             >
-              {t.label}
+              <UiIcon name={t.icon} size={17}/>{t.label}
             </button>
           )
         })}
       </div>
 
       {/* Основная услуга */}
-      <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Основная услуга</p>
+      <p className="eb-cab-section-title"><UiIcon name="sparkles" size={16}/>Основная услуга</p>
       <div style={{ marginBottom: '16px' }}>
         {services.filter(s => s.is_main).map(service => (
           <div key={service.id}>
             <div
               onClick={() => handleServiceSelect(service)}
+              className="eb-service-choice"
+              data-active={selectedService?.id === service.id}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -385,12 +394,12 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
               }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0, flex: 1 }}>
-                <span>⭐ {service.name}</span>
-                <span style={{ fontSize: 12, color: '#888' }}>
-                  {service.location_type === 'outcall' ? '🚗' : service.location_type === 'incall' ? '🏠' : '🚗🏠'} · {service.duration} мин
+                <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}><UiIcon name="star" size={17}/>{service.name}</span>
+                <span style={{ fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 5 }}>
+                  {service.location_type !== 'incall' && <UiIcon name="car" size={14}/>} {service.location_type !== 'outcall' && <UiIcon name="home" size={14}/>} · {service.duration} мин
                 </span>
               </div>
-              <span style={{ color: '#2481cc', fontWeight: 'bold', whiteSpace: 'nowrap', flexShrink: 0 }}>{service.price} руб</span>
+              <span className="eb-service-choice-price" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>{service.price} руб</span>
             </div>
 
             {/* Допы под своей основной */}
@@ -398,6 +407,8 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
                 <div
                   key={extra.id}
                   onClick={() => toggleExtra(extra)}
+                  className="eb-extra-choice"
+                  data-active={Boolean(selectedExtras.find(s => s.id === extra.id))}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -411,8 +422,8 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
                     fontSize: '13px'
                   }}
                 >
-                  <span>➕ {extra.name} {extra.duration ? `· ${extra.duration} мин` : ''}</span>
-                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>+{extra.price} руб</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><UiIcon name="plus" size={14}/>{extra.name} {extra.duration ? `· ${extra.duration} мин` : ''}</span>
+                  <span className="eb-service-choice-price">+{extra.price} руб</span>
                 </div>
               ))
             }
@@ -430,8 +441,9 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
         { label: 'Комментарий', value: comment, setter: setComment, placeholder: 'Важные детали...' },
       ].map(field => (
         <div key={field.label} style={{ marginBottom: '12px' }}>
-          <p style={{ margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' }}>{field.label}</p>
+          <p className="eb-cab-section-title" style={{ marginBottom: 6 }}>{field.label}</p>
           <input
+            className="eb-cab-field"
             value={field.value}
             onChange={e => field.setter(e.target.value)}
             placeholder={field.placeholder}
@@ -447,50 +459,51 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
         </div>
       ))}
 
-<div style={{
+<div className="eb-order-summary" style={{
   background: '#f0f7ff',
   borderRadius: '8px',
   padding: '12px',
   marginBottom: '12px',
 }}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-    <span style={{ color: '#666' }}>⏱ Длительность:</span>
+  <div className="eb-order-summary-row">
+    <span className="eb-order-summary-label"><UiIcon name="clock" size={16}/>Длительность:</span>
     <span>{calcDuration()} мин</span>
   </div>
   {locationType === 'outcall' && executor.travel_time > 0 && (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-        <span style={{ color: '#f5a623' }}>🚗 Дорога ДО клиента:</span>
+      <div className="eb-order-summary-row">
+        <span className="eb-order-summary-label"><UiIcon name="car" size={16}/>Дорога до клиента:</span>
         <span style={{ color: '#f5a623' }}>+{executor.travel_time} мин</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-        <span style={{ color: '#f5a623' }}>🚗 Дорога ПОСЛЕ заказа:</span>
+      <div className="eb-order-summary-row">
+        <span className="eb-order-summary-label"><UiIcon name="car" size={16}/>Дорога после заказа:</span>
         <span style={{ color: '#f5a623' }}>+{executor.travel_time} мин</span>
       </div>
     </>
   )}
   {executor.buffer_time > 0 && (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-      <span style={{ color: '#16a34a' }}>☕ Перерыв после заказа:</span>
+    <div className="eb-order-summary-row">
+      <span className="eb-order-summary-label"><UiIcon name="clock" size={16}/>Перерыв после заказа:</span>
       <span style={{ color: '#16a34a' }}>+{executor.buffer_time} мин</span>
     </div>
   )}
  
-  <div style={{
+  <div className="eb-order-summary-row eb-order-summary-total" style={{
     borderTop: '1px solid #ddd',
     marginTop: '8px',
     paddingTop: '8px',
     display: 'flex',
     justifyContent: 'space-between'
   }}>
-    <span style={{ fontWeight: 'bold' }}>💰 Итого:</span>
-    <span style={{ fontWeight: 'bold', color: '#2481cc' }}>{calcTotal()} руб</span>
+    <span className="eb-order-summary-label"><UiIcon name="wallet" size={16}/>Итого:</span>
+    <span className="eb-service-choice-price">{calcTotal()} руб</span>
   </div>
 </div>
 
       <button
         onClick={handleSubmit}
         disabled={loading}
+        className="eb-cab-primary"
         style={{
           width: '100%',
           padding: '14px',
@@ -502,8 +515,10 @@ function AddOrderPage({ executor, initialDay, initialHour, initialMinute, onBack
           fontSize: '16px'
         }}
       >
-        {loading ? 'Сохраняем...' : `Добавить заявку · ${calcTotal()} руб`}
+        <UiIcon name={loading ? 'refresh' : 'plus'} size={18}/>{loading ? 'Сохраняем...' : `Добавить заявку · ${calcTotal()} руб`}
       </button>
+      </main>
+      </div>
     </div>
   )
 }

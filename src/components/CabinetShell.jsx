@@ -72,6 +72,8 @@ export default function CabinetBaseStyles() {
         .eb-cab-tab[data-active="true"]{background:#fff!important;color:#A33191!important;font-weight:500!important;box-shadow:0 5px 16px rgba(72,34,64,.08)!important}
         .eb-cab-primary{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;background:linear-gradient(100deg,#E651C5,#F268A8 48%,#FFB342)!important;color:#fff!important;border:0!important;border-radius:14px!important;box-shadow:0 10px 24px rgba(229,75,170,.20)!important;font-weight:500!important}
         .eb-cab-primary:hover{transform:translateY(-1px);box-shadow:0 13px 28px rgba(229,75,170,.27)!important}
+        .eb-cab-primary:disabled{opacity:.55!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+        .eb-cab-primary:disabled svg{animation:eb-cab-spin .8s linear infinite}
         .eb-cab-secondary{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;background:#fff!important;color:#943184!important;border:1px solid #E5BDDA!important;border-radius:13px!important;font-weight:450!important}
         .eb-cab-secondary:hover{background:#FFF6FC!important;border-color:#D99ACD!important}
         .eb-cab-danger{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;background:#FFF9FA!important;color:#B9465A!important;border:1px solid #F0CBD3!important;border-radius:13px!important}
@@ -102,6 +104,54 @@ export default function CabinetBaseStyles() {
         .eb-schedule-toolbar button,.eb-schedule-quick button{border:1px solid #E7DDE5!important;border-radius:11px!important;background:#fff!important;color:#7B4673!important}
         .eb-schedule-toolbar button:hover,.eb-schedule-quick button:hover{background:#FFF5FB!important;border-color:#DDB0D2!important}
         .eb-schedule-grid{border-radius:14px;overflow:hidden}
+        .eb-add-order .eb-cabinet-inner,.eb-settings-cabinet .eb-cabinet-inner{max-width:700px}
+        .eb-cab-form-card{padding:22px!important}
+        .eb-cab-section-title{display:flex;align-items:center;gap:8px;margin:0 0 9px!important;color:#5F5661;font-size:13px!important;font-weight:500!important;letter-spacing:.01em}
+        .eb-cab-section-title svg{color:#AB3698}
+        .eb-cab-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px}
+        .eb-cab-form-grid .eb-cab-field,.eb-cab-form-card>.eb-cab-field{min-height:46px;padding:11px 13px!important;font:inherit}
+        .eb-visit-options{display:flex;gap:9px;margin-bottom:18px}
+        .eb-visit-choice,.eb-location-choice,.eb-day-choice{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;border:1px solid #E8E0E6!important;background:#fff!important;color:#665D68!important;box-shadow:0 4px 14px rgba(72,34,64,.035);transition:.18s ease}
+        .eb-visit-choice{min-height:42px;padding:0 16px!important;border-radius:13px!important}
+        .eb-visit-choice[data-active="true"],.eb-location-choice[data-active="true"],.eb-day-choice[data-active="true"]{border-color:transparent!important;background:linear-gradient(100deg,#D953C4,#9A63DC)!important;color:#fff!important;box-shadow:0 8px 20px rgba(175,63,167,.18)!important}
+        .eb-visit-choice:disabled{opacity:.42;cursor:not-allowed!important}
+        .eb-service-choice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px!important;margin-bottom:6px!important;border:1px solid #ECE3EA!important;border-radius:16px!important;background:#fff!important;cursor:pointer;transition:.18s ease}
+        .eb-service-choice:hover{border-color:#DEB4D5!important;background:#FFF9FD!important}
+        .eb-service-choice[data-active="true"]{border-color:#DDA7D3!important;background:linear-gradient(115deg,#FFF2FB,#FFF8F0)!important;box-shadow:0 8px 22px rgba(111,55,99,.07)}
+        .eb-service-choice-price{color:#A33191!important;font-weight:550!important}
+        .eb-extra-choice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px 10px 24px!important;margin:0 0 5px 12px!important;border:1px solid #EEE6ED!important;border-radius:13px!important;background:#fff!important;cursor:pointer;transition:.18s ease}
+        .eb-extra-choice[data-active="true"]{border-color:#D8B5E5!important;background:#F9F3FF!important}
+        .eb-order-summary{padding:15px!important;margin:18px 0 12px!important;border:1px solid #EADFE8!important;border-radius:16px!important;background:linear-gradient(135deg,#FFF4FB,#FFF9F1)!important}
+        .eb-order-summary-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px;color:#6F6671;font-size:13.5px}
+        .eb-order-summary-label{display:flex;align-items:center;gap:7px}
+        .eb-order-summary-label svg{color:#AB3698}
+        .eb-order-summary-total{padding-top:10px;margin-top:9px!important;border-top:1px solid #E6D9E3!important;color:#3B323D!important;font-weight:550}
+        .eb-cab-form-card .eb-cab-primary{width:100%;min-height:48px;padding:0 18px!important}
+        .eb-settings-section{padding:20px!important;margin-top:14px!important}
+        .eb-settings-section:first-of-type{margin-top:0!important}
+        .eb-settings-section h3{display:flex;align-items:center;gap:9px;margin:0 0 17px!important;font-size:19px!important;font-weight:520!important;letter-spacing:-.015em;color:#3D3540}
+        .eb-settings-section h3 svg{color:#A73594}
+        .eb-settings-section label{display:block;margin:0 0 6px!important;color:#776E79!important;font-size:12.5px!important;font-weight:450!important}
+        .eb-settings-section input:not([type="file"]),.eb-settings-section textarea,.eb-settings-section select{width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:11px 13px!important;border:1px solid #E8E0E6!important;border-radius:14px!important;background:#fff!important;color:#332D36!important;font:inherit!important;box-shadow:0 4px 16px rgba(72,34,64,.025);transition:.18s}
+        .eb-settings-section input:not([type="file"]):focus,.eb-settings-section textarea:focus,.eb-settings-section select:focus{outline:none!important;border-color:#DCA3D1!important;box-shadow:0 0 0 3px rgba(233,87,197,.10)!important}
+        .eb-settings-section .eb-cab-primary{width:100%;min-height:46px;margin-top:16px!important;padding:0 15px!important}
+        .eb-avatar-shell{display:grid!important;place-items:center;width:106px!important;height:106px!important;border:1px solid #E8D9E5!important;background:linear-gradient(145deg,#FFF0FA,#FFF5EB)!important;box-shadow:0 10px 24px rgba(97,48,86,.09);color:#AC3999}
+        .eb-settings-toggle{display:flex!important;align-items:center;justify-content:space-between;width:100%!important;padding:10px 2px!important;background:transparent!important;border:0!important;color:#943184!important;font-size:13.5px!important;cursor:pointer}
+        .eb-settings-collapsible{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+        .eb-settings-collapsible h3{margin:0!important}
+        .eb-settings-map-wrap{overflow:hidden;border-radius:16px;border:1px solid #E9E0E7}
+        .eb-day-list{display:flex;gap:7px;flex-wrap:wrap}
+        .eb-day-choice{min-width:44px;padding:8px 11px!important;border-radius:11px!important}
+        .eb-service-editor{padding:15px!important;margin-bottom:12px!important;border:1px solid #E9DFE7!important;border-radius:17px!important;background:linear-gradient(145deg,#FFFDFE,#FFF8FC)!important}
+        .eb-service-editor-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+        .eb-service-kicker{color:#A33191!important;font-size:11px!important;font-weight:550!important;letter-spacing:.055em;text-transform:uppercase}
+        .eb-icon-button{display:inline-grid!important;place-items:center;width:34px;height:34px;padding:0!important;border:1px solid #EADFE7!important;border-radius:11px!important;background:#fff!important;color:#A74659!important;cursor:pointer}
+        .eb-location-choice{padding:7px 12px!important;border-radius:999px!important;font-size:12.5px!important}
+        .eb-service-sub{margin-top:11px!important;padding:12px!important;border-left:2px solid #DCA6D2!important;border-radius:0 13px 13px 0;background:rgba(249,242,250,.7)}
+        .eb-settings-note{color:#8B828D!important;font-size:12px!important;line-height:1.5}
+        .eb-loading-card{display:flex;align-items:center;justify-content:center;gap:10px;min-height:160px;margin:40px auto;padding:24px;max-width:500px;color:#847B86}
+        .eb-loading-card::before{content:'';width:22px;height:22px;border:2px solid #F0DCEB;border-top-color:#D553BF;border-radius:50%;animation:eb-cab-spin .75s linear infinite}
+        @keyframes eb-cab-spin{to{transform:rotate(360deg)}}
         @media(max-width:700px){
           .eb-cabinet{padding:12px 10px 28px!important}
           .eb-cabinet-inner{max-width:100%}
@@ -122,6 +172,10 @@ export default function CabinetBaseStyles() {
           .eb-schedule-toolbar{align-items:stretch}
           .eb-schedule-toolbar>span{font-size:12px!important;text-align:center;align-self:center}
           .eb-schedule-toolbar button{padding:6px 8px!important;font-size:12px!important}
+          .eb-cab-form-card,.eb-settings-section{padding:16px!important}
+          .eb-cab-form-grid{gap:8px}
+          .eb-service-choice{padding:12px!important}
+          .eb-settings-section h3{font-size:18px!important}
         }
         @media(max-width:360px){
           .eb-cabinet{padding-left:8px!important;padding-right:8px!important}
