@@ -51,6 +51,8 @@
   --mono: ui-monospace, Consolas, monospace;
 
   font: 350 18px/145% var(--sans);
+  font-variant-numeric: lining-nums;
+  font-feature-settings: 'lnum' 1;
   letter-spacing: 0.08px;
   color-scheme: light dark;
   color: var(--text);
