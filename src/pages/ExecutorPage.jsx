@@ -8,6 +8,9 @@ import MiniCalendar from '../components/MiniCalendar'
 import useIsMobile from '../hooks/useIsMobile'
 import { loadReviewsByExecutors, calculateStats } from '../reviewsUtils'
 import BalanceBlock from '../components/BalanceBlock'
+import CabinetBaseStyles, { CabinetSelect } from '../components/CabinetShell.jsx'
+import { BrandMark } from '../components/WebShell.jsx'
+import UiIcon from '../components/UiIcon.jsx'
 // Retry-обёртка для нестабильного соединения (Telegram WebApp)
 async function withRetry(fn, attempts = 3, delayMs = 1000) {
   for (let i = 0; i < attempts; i++) {
@@ -123,27 +126,27 @@ function BlockDetailsModal({ block, onClose, onSaved }) {
   }
 
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '400px', width: '100%' }}>
+    <div className="eb-cab-modal-backdrop" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+      <div className="eb-cab-modal" onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '400px', width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <h3 style={{ margin: 0 }}>
             {block.type === 'auto_travel' ? '🚗 Дорога' : block.type === 'auto_buffer' ? '☕ Авто-буфер' : '☕ Блокировка'}
           </h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+          <button onClick={onClose} aria-label="Закрыть" style={{ background: 'none', border: 'none', cursor: 'pointer' }}><UiIcon name="close" size={20}/></button>
         </div>
 
         <p style={{ marginTop: '12px', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>Время начала</p>
-        <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
+        <input className="eb-cab-field" type="time" value={startTime} onChange={e => setStartTime(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
 
         <p style={{ marginTop: '12px', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>Длительность (мин)</p>
-        <input type="number" value={duration} onChange={e => setDuration(Number(e.target.value))} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
+        <input className="eb-cab-field" type="number" value={duration} onChange={e => setDuration(Number(e.target.value))} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
 
         <p style={{ marginTop: '12px', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>Причина / комментарий</p>
-        <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="Например: обед, прием у врача" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', minHeight: '60px', boxSizing: 'border-box', resize: 'vertical' }} />
+        <textarea className="eb-cab-field" value={reason} onChange={e => setReason(e.target.value)} placeholder="Например: обед, прием у врача" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', minHeight: '60px', boxSizing: 'border-box', resize: 'vertical' }} />
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-          <button onClick={deleteBlock} disabled={saving} style={{ flex: 1, padding: '12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer' }}>Удалить</button>
-          <button onClick={save} disabled={saving} style={{ flex: 2, padding: '12px', background: '#2481cc', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer' }}>
+          <button className="eb-cab-danger" onClick={deleteBlock} disabled={saving} style={{ flex: 1, padding: '12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer' }}>Удалить</button>
+          <button className="eb-cab-primary" onClick={save} disabled={saving} style={{ flex: 2, padding: '12px', background: '#2481cc', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer' }}>
             {saving ? 'Сохранение...' : 'Сохранить'}
           </button>
         </div>
@@ -241,8 +244,8 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
     onSaved()
   }
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, height: '100dvh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '400px', width: '100%', maxHeight: '90dvh', overflow: 'auto', overscrollBehavior: 'contain' }}>
+    <div className="eb-cab-modal-backdrop" onClick={onClose} style={{ position: 'fixed', inset: 0, height: '100dvh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+      <div className="eb-cab-modal" onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '400px', width: '100%', maxHeight: '90dvh', overflow: 'auto', overscrollBehavior: 'contain' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
         <div>
             <h3 style={{ margin: 0 }}>Заказ #{order.id}</h3>
@@ -251,7 +254,7 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
               {order.created_at ? ` · ${new Date(order.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}` : ''}
             </p>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+          <button onClick={onClose} aria-label="Закрыть" style={{ background: 'none', border: 'none', cursor: 'pointer' }}><UiIcon name="close" size={20}/></button>
         </div>
         {order.status === 'cancelled' && order.cancelled_by && (
           <div style={{
@@ -275,6 +278,7 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
         <p style={{ margin: '4px 0', fontSize: '14px' }}><b>Телефон:</b> {order.client_phone || order.client?.phone || order.phone || '—'}</p>
         {(order.client_telegram_username || order.client?.telegram_username) && (
           <a
+            className="eb-cab-primary"
             href={`https://t.me/${order.client_telegram_username || order.client?.telegram_username}`}
             target="_blank"
             rel="noreferrer"
@@ -291,7 +295,7 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
               fontWeight: 'bold'
             }}
           >
-            💬 Написать @{order.client_telegram_username || order.client?.telegram_username}
+            <UiIcon name="telegram" size={16}/>Написать @{order.client_telegram_username || order.client?.telegram_username}
           </a>
         )}
         <p style={{ margin: '4px 0', fontSize: '14px' }}>
@@ -312,6 +316,7 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
         <p style={{ margin: '4px 0', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <b>Цена:</b>
           <input
+            className="eb-cab-field"
             type="number"
             value={price}
             onChange={e => setPrice(e.target.value)}
@@ -330,21 +335,18 @@ function OrderDetailsModal({ order, clientStats, globalClientStats, onClose, onS
         {order.comment && <p style={{ margin: '4px 0', fontSize: '14px', color: '#666' }}><b>От клиента:</b> {order.comment}</p>}
 
         <p style={{ marginTop: '16px', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>Статус</p>
-        <select value={status} onChange={e => setStatus(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px' }}>
-          {Object.entries(STATUS_LABELS).map(([key, label]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
+        <CabinetSelect value={status} onChange={e => setStatus(e.target.value)} ariaLabel="Статус заказа"
+          options={Object.entries(STATUS_LABELS).map(([key, label]) => ({ value: key, label }))}/>
 
         <p style={{ marginTop: '12px', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>Комментарий исполнителя</p>
-        <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Например: клиент опаздывает на 15 мин" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px', minHeight: '60px', boxSizing: 'border-box', resize: 'vertical' }} />
+        <textarea className="eb-cab-field" value={comment} onChange={e => setComment(e.target.value)} placeholder="Например: клиент опаздывает на 15 мин" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px', minHeight: '60px', boxSizing: 'border-box', resize: 'vertical' }} />
 
-        <button onClick={save} disabled={saving} style={{ width: '100%', marginTop: '12px', padding: '12px', background: '#2481cc', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer' }}>
+        <button className="eb-cab-primary" onClick={save} disabled={saving} style={{ width: '100%', marginTop: '12px', padding: '12px', background: '#2481cc', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer' }}>
           {saving ? 'Сохранение...' : 'Сохранить'}
         </button>
         {order.source !== 'booking' && (
-          <button onClick={fullDelete} disabled={saving} style={{ width: '100%', marginTop: '8px', padding: '10px', background: 'white', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' }}>
-            🗑 Удалить полностью
+          <button className="eb-cab-danger" onClick={fullDelete} disabled={saving} style={{ width: '100%', marginTop: '8px', padding: '10px', background: 'white', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' }}>
+            <UiIcon name="close" size={15}/>Удалить полностью
           </button>
         )}
       </div>
@@ -464,11 +466,11 @@ function BreakModal({ executor, day, orders, blocks, initialHour, initialMinute,
   const dateLabel = day.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
 
   return (
-    <div
+    <div className="eb-cab-modal-backdrop"
       onClick={onClose}
       style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
     >
-      <div
+      <div className="eb-cab-modal"
         onClick={(e) => e.stopPropagation()}
         style={{ background: 'white', borderRadius: '12px', padding: '20px', width: '100%', maxWidth: '320px' }}
       >
@@ -538,6 +540,7 @@ function BreakModal({ executor, day, orders, blocks, initialHour, initialMinute,
 
         <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px' }}>Время начала</label>
         <input
+          className="eb-cab-field"
           type="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
@@ -546,6 +549,7 @@ function BreakModal({ executor, day, orders, blocks, initialHour, initialMinute,
 
         <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px' }}>Длительность (минут)</label>
         <input
+          className="eb-cab-field"
           type="number"
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
@@ -554,6 +558,7 @@ function BreakModal({ executor, day, orders, blocks, initialHour, initialMinute,
 
         <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px' }}>Причина</label>
         <input
+          className="eb-cab-field"
           type="text"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
@@ -562,12 +567,14 @@ function BreakModal({ executor, day, orders, blocks, initialHour, initialMinute,
 
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
+            className="eb-cab-secondary"
             onClick={onClose}
             style={{ flex: 1, padding: '10px', border: '1px solid #ddd', background: 'white', borderRadius: '6px', cursor: 'pointer' }}
           >
             Отмена
           </button>
           <button
+            className="eb-cab-primary"
             onClick={handleSave}
             disabled={saving}
             style={{ flex: 1, padding: '10px', border: 'none', background: '#3b82f6', color: 'white', borderRadius: '6px', cursor: 'pointer' }}
@@ -705,9 +712,9 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
   const bufferTime = executor.buffer_time || 0
 
   return (
-    <div style={{ background: 'white', borderRadius: '12px', padding: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+    <div className="eb-cab-card eb-schedule-card" style={{ background: 'white', borderRadius: '12px', padding: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
       {/* Переключатель недель */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+      <div className="eb-schedule-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
         <button onClick={() => setWeekOffset(weekOffset - 1)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #ddd', background: 'white', cursor: 'pointer' }}>← Назад</button>
         <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
           {formatDay(days[0])} — {formatDay(days[days.length - 1])}
@@ -716,7 +723,7 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
       </div>
 
       {/* Быстрый переход к дате */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap' }}>
+      <div className="eb-schedule-quick" style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap' }}>
       <MiniCalendar
           value={pickedCalendarDate}
           allowPast
@@ -744,7 +751,7 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
           title="Обновить расписание"
           style={{ padding: '5px 10px', borderRadius: '8px', border: '1px solid #ddd', background: 'white', cursor: 'pointer', fontSize: '13px' }}
         >
-          🔄 Обновить
+          <UiIcon name="refresh" size={15} style={{ display: 'inline', verticalAlign: '-3px', marginRight: 5 }}/>Обновить
         </button>
       </div>
 
@@ -759,7 +766,7 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
       )}
 
       {/* Сетка */}
-      <div style={{ display: 'flex', gap: '4px' }}>
+      <div className="eb-schedule-grid" style={{ display: 'flex', gap: '4px' }}>
         {/* Колонка времени */}
         <div style={{ width: '40px', flexShrink: 0 }}>
           <div style={{ height: '28px' }}></div>
@@ -846,7 +853,7 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
                       }}
                       title={block.reason}
                     >
-                      {block.type === 'auto_travel' ? '🚗' : '☕'} {block.reason && <span style={{ marginLeft: 4 }}>{block.reason.slice(0, 12)}</span>}
+                      <UiIcon name={block.type === 'auto_travel' ? 'car' : 'clock'} size={12}/> {block.reason && <span style={{ marginLeft: 4 }}>{block.reason.slice(0, 12)}</span>}
                     </div>
                   )
                 })}
@@ -968,13 +975,13 @@ const viewStartMin = expandedBefore ? 0 : earliestMin
               onClick={() => { onCreateOrder({ day: clickMenu.day, hour: clickMenu.hour, minute: clickMenu.minute }); setClickMenu(null) }}
               style={{ display: 'block', width: '100%', padding: '12px 20px', border: 'none', background: 'white', cursor: 'pointer', fontSize: '14px', textAlign: 'left', whiteSpace: 'nowrap' }}
             >
-              📝 Создать заказ
+              <UiIcon name="clipboard" size={16} style={{ display: 'inline', verticalAlign: '-3px', marginRight: 7 }}/>Создать заказ
             </button>
             <button
               onClick={() => { setBreakDay({ day: clickMenu.day, hour: clickMenu.hour, minute: clickMenu.minute }); setClickMenu(null) }}
               style={{ display: 'block', width: '100%', padding: '12px 20px', border: 'none', borderTop: '1px solid #eee', background: 'white', cursor: 'pointer', fontSize: '14px', textAlign: 'left', whiteSpace: 'nowrap' }}
             >
-              ☕ Перерыв
+              <UiIcon name="clock" size={16} style={{ display: 'inline', verticalAlign: '-3px', marginRight: 7 }}/>Перерыв
             </button>
           </div>
         </>
@@ -1301,107 +1308,51 @@ function ExecutorPage({ executorId }) {
   const web = isWeb()
 
   return (
-    <div style={{ padding: web ? '20px 24px 40px' : '16px', maxWidth: web ? '100%' : 600, margin: '0 auto' }}>
+    <div className="eb-web eb-cabinet eb-executor-cabinet" style={{ padding: web ? '20px 24px 40px' : '16px', maxWidth: web ? '100%' : 600, margin: '0 auto' }}>
+      <CabinetBaseStyles />
+      <div className="eb-cabinet-inner">
 
       {/* Верхняя панель: домик слева, помощь + настройки справа */}
-      {web ? (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 8, flexWrap: 'wrap' }}>
-          <a
-            href="/"
-            style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px 9px', borderRadius: 8,
-              border: '2px solid #FDB813', color: '#B8860B',
-              background: '#fff', textDecoration: 'none',
-              fontSize: 13, fontWeight: 700,
-            }}
-          >
-            Главная
-          </a>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setShowHelpModal(true)}
-              style={{ background: 'none', border: 'none', fontSize: 13, color: '#B8860B', cursor: 'pointer', padding: 0, fontWeight: 600 }}
-            >
-              ❓ Помощь
-            </button>
-            <a href="/?settings=1" style={{ fontSize: 13, color: '#B8860B', textDecoration: 'none', fontWeight: 600 }}>
-              ⚙️ Настройки
-            </a>
-            {getSession()?.id && (
-              <button
-                onClick={() => { clearSession(); window.location.href = '/' }}
-                aria-label="Выйти"
-                title="Выйти"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  padding: '4px 7px', borderRadius: 8,
-                  border: '2px solid #EF4444', color: '#EF4444',
-                  background: '#fff', cursor: 'pointer',
-                  lineHeight: 0,
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                  <polyline points="10 17 15 12 10 7" />
-                  <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
-              </button>
-            )}
-          </div>
+      <div className="eb-cab-nav">
+        <a href="/" className="eb-cab-brand" aria-label="На главную ebookee"><BrandMark size={30}/><span className="eb-brand-name">ebookee</span></a>
+        <div className="eb-cab-nav-actions">
+          <button className="eb-cab-nav-action" onClick={() => setShowHelpModal(true)}><UiIcon name="help" size={17}/><span className="eb-cab-action-label">Помощь</span></button>
+          <a href="/?settings=1" className="eb-cab-nav-action"><UiIcon name="settings" size={17}/><span className="eb-cab-action-label">Настройки</span></a>
+          {getSession()?.id && <button className="eb-cab-nav-action" data-danger="true" onClick={() => { clearSession(); window.location.href = '/' }} aria-label="Выйти" title="Выйти"><UiIcon name="logout" size={17}/><span className="eb-cab-action-label">Выйти</span></button>}
         </div>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <a href="/" style={{ fontSize: '14px', color: '#2481cc', textDecoration: 'none' }}>
-            🏠 На главную
-          </a>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <button
-              onClick={() => setShowHelpModal(true)}
-              style={{ background: 'none', border: 'none', fontSize: '14px', color: '#2481cc', cursor: 'pointer', padding: 0 }}
-            >
-              ❓ Помощь
-            </button>
-            <a href="/?settings=1" style={{ fontSize: '14px', color: '#2481cc', textDecoration: 'none' }}>
-              ⚙️ Настройки
-            </a>
-            {getSession()?.id && (
-              <button
-                onClick={() => { clearSession(); window.location.href = '/' }}
-                style={{ background: 'none', border: 'none', fontSize: '14px', color: '#C0341D', cursor: 'pointer', padding: 0 }}
-              >
-                Выйти
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      </div>
+      <div className="eb-cab-title-row">
+        <div className="eb-cab-title-icon"><UiIcon name="user" size={22}/></div>
+        <div><h1 className="eb-cab-title">Кабинет исполнителя</h1><p className="eb-cab-subtitle">Заявки, расписание и управление работой</p></div>
+      </div>
 
       {showHelpModal && (
-        <div onClick={() => setShowHelpModal(false)} style={{ position: 'fixed', inset: 0, height: '100dvh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '20px', maxWidth: '360px', width: '100%', textAlign: 'center' }}>
+        <div className="eb-cab-modal-backdrop" onClick={() => setShowHelpModal(false)} style={{ position: 'fixed', inset: 0, height: '100dvh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+          <div className="eb-cab-modal" onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', padding: '22px', maxWidth: '360px', width: '100%', textAlign: 'center' }}>
             <h3 style={{ marginTop: 0 }}>Помощь</h3>
             <p style={{ color: '#666', fontSize: '14px' }}>
               На сайте — видео-обучалка и ответы на частые вопросы.
             </p>
             <a
+              className="eb-cab-secondary"
               href="https://ebookee.app"
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'block', padding: '10px', borderRadius: '8px', border: '1px solid #2481cc', color: '#2481cc', textDecoration: 'none', marginBottom: '10px', fontSize: '14px' }}
             >
-              🌐 Открыть ebookee.app
+              Открыть ebookee.app
             </a>
             <p style={{ color: '#666', fontSize: '13px', margin: '14px 0 8px' }}>
               Нужна верификация или остались вопросы — напишите нам:
             </p>
             <a
+              className="eb-cab-primary"
               href="https://t.me/ebookee_zabota"
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'block', padding: '10px', borderRadius: '8px', background: '#2481cc', color: 'white', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}
             >
-              💬 Написать в Telegram
+              <UiIcon name="telegram" size={17}/>Написать в Telegram
             </a>
             <button
               onClick={() => setShowHelpModal(false)}
@@ -1414,7 +1365,7 @@ function ExecutorPage({ executorId }) {
       )}
 
       {/* Профиль */}
-      <div style={{
+      <div className="eb-cab-card eb-cab-profile" style={{
         background: 'white',
         borderRadius: '12px',
         padding: '16px',
@@ -1422,6 +1373,8 @@ function ExecutorPage({ executorId }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         textAlign: 'center'
       }}>
+        <div className="eb-cab-profile-main">
+        <div>
         <h2 style={{ margin: '0 0 4px' }}>{executor?.users?.full_name}</h2>
         {(() => {
           const doneOrders = orders.filter(o => o.status === 'done' && !o.is_deleted)
@@ -1430,14 +1383,16 @@ function ExecutorPage({ executorId }) {
           return (
             <p style={{ margin: '0', color: '#666' }}>
               {ratingStats && ratingStats.count > 0
-                ? <>⭐ {ratingStats.avgRating.toFixed(1)} ({ratingStats.count}) · </>
+                ? <><UiIcon name="star" size={15} style={{ display: 'inline', verticalAlign: '-2px', color: '#D78A35' }}/> {ratingStats.avgRating.toFixed(1)} ({ratingStats.count}) · </>
                 : <>Новый исполнитель · </>}
-              📦 {fromApp} / {total} заказов
+              {fromApp} / {total} заказов
             </p>
           )
         })()}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '10px' }}>
+        </div>
+        <div className="eb-cab-profile-actions">
           <button
+            className="eb-cab-visibility"
             onClick={toggleVisible}
             style={{
               padding: '8px 16px',
@@ -1449,20 +1404,23 @@ function ExecutorPage({ executorId }) {
               color: 'white',
             }}
           >
-            {executor?.is_visible ? '👁 Виден на главной' : '🙈 Скрыт с главной'}
+            <UiIcon name={executor?.is_visible ? 'eye' : 'eyeOff'} size={17}/>{executor?.is_visible ? 'Виден на главной' : 'Скрыт с главной'}
           </button>
           <BalanceBlock executor={executor} />
           </div>
+        </div>
       </div>
 
       {/* Табы */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', justifyContent: web ? 'center' : 'flex-start' }}>
+      <div className="eb-cab-tabs">
         {[
-          { id: 'orders', label: '📋 Заявки' },
-          { id: 'schedule', label: '📅 Расписание' },
-          { id: 'earnings', label: '💰 Заработок' },
+          { id: 'orders', label: 'Заявки', icon: 'clipboard' },
+          { id: 'schedule', label: 'Расписание', icon: 'calendar' },
+          { id: 'earnings', label: 'Заработок', icon: 'wallet' },
         ].map(tab => (
           <button
+            className="eb-cab-tab"
+            data-active={activeTab === tab.id}
             key={tab.id}
             onClick={() => navigate('/executor/' + (tab.id === 'earnings' ? 'finance' : tab.id))}
             style={{
@@ -1480,7 +1438,7 @@ function ExecutorPage({ executorId }) {
               fontWeight: activeTab === tab.id ? 700 : 400,
             }}
           >
-            {tab.label}
+            <UiIcon name={tab.icon} size={17}/>{tab.label}
           </button>
         ))}
       </div>
@@ -1488,6 +1446,7 @@ function ExecutorPage({ executorId }) {
       {/* Кнопка добавить заявку */}
 {activeTab === 'orders' && (
   <button
+    className="eb-cab-secondary"
     onClick={() => setShowAddOrder(true)}
     style={{
       width: '100%',
@@ -1501,14 +1460,15 @@ function ExecutorPage({ executorId }) {
       marginBottom: '12px'
     }}
   >
-    + Добавить заявку вручную
+    <UiIcon name="plus" size={17}/>Добавить заявку вручную
   </button>
 )}
       {activeTab === 'orders' && (
         <div>
           <input
+            className="eb-cab-field"
             type="text"
-            placeholder="🔍 Поиск по имени, телефону, @тг, адресу, комментарию, №"
+            placeholder="Поиск по имени, телефону, Telegram, адресу или номеру"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             style={{
@@ -1549,7 +1509,7 @@ function ExecutorPage({ executorId }) {
             return filtered.map(order => {
               const status = getStatusLabel(order.status, order.cancelled_by)
               return (
-                <div key={order.id} style={{
+                <div key={order.id} className="eb-cab-card eb-cab-order" style={{
                   background: 'white',
                   borderRadius: '12px',
                   padding: '16px',
@@ -1565,7 +1525,7 @@ function ExecutorPage({ executorId }) {
                   </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: '10px', color: '#bbb', marginBottom: '2px' }}>#{order.id}</div>
-                      <span style={{
+                      <span className="eb-cab-status" data-status={order.status} style={{
                        background: status.bg,
                        color: status.color,
                        padding: '4px 10px',
@@ -1575,24 +1535,25 @@ function ExecutorPage({ executorId }) {
                     </div>
                   </div>
                   {order.location_type === 'outcall' && order.address && (
-                    <p style={{ margin: '8px 0 4px', fontSize: '14px' }}>🚗 {order.address}</p>
+                    <p className="eb-cab-meta"><UiIcon name="car" size={17}/>{order.address}</p>
                   )}
                   {order.location_type === 'incall' && order.incall_address && (
-                    <p style={{ margin: '8px 0 4px', fontSize: '11px', color: '#999' }}>
-                      🏠 Адрес приёма: {order.incall_address}
+                    <p className="eb-cab-meta">
+                      <UiIcon name="home" size={17}/>Адрес приёма: {order.incall_address}
                     </p>
                   )}
-                  <p style={{ margin: '4px 0', fontSize: '14px' }}>📅 {formatDate(order.scheduled_at)}</p>
-                  <p style={{ margin: '4px 0', fontSize: '14px' }}>📞 {order.client_phone || order.client?.phone || '—'}</p>
-<p style={{ margin: '4px 0', fontSize: '14px' }}>💬 {order.comment || 'Без комментария'}</p>
-<p style={{ margin: '4px 0', fontSize: '14px' }}>🛠 {order.cleaning_type}</p>
+                  <p className="eb-cab-meta"><UiIcon name="calendar" size={17}/>{formatDate(order.scheduled_at)}</p>
+                  <p className="eb-cab-meta"><UiIcon name="phone" size={17}/>{order.client_phone || order.client?.phone || '—'}</p>
+<p className="eb-cab-meta"><UiIcon name="message" size={17}/>{order.comment || 'Без комментария'}</p>
+<p className="eb-cab-meta"><UiIcon name="sparkles" size={17}/>{order.cleaning_type}</p>
 <div style={{ display: 'flex', gap: '16px', fontSize: '14px', marginTop: '4px' }}>
-  {order.total_price && <span>💰 {order.total_price} руб</span>}
-  {order.total_duration && <span>⏱ {order.total_duration} мин</span>}
+  {order.total_price && <span>{order.total_price} руб</span>}
+  {order.total_duration && <span>{order.total_duration} мин</span>}
   </div>
 <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
 {(order.client_telegram_username || order.client?.telegram_username) && (
   <a
+  className="eb-cab-primary"
   href={`https://t.me/${order.client_telegram_username || order.client?.telegram_username}`}
   target="_blank"
   rel="noreferrer"
@@ -1606,9 +1567,9 @@ function ExecutorPage({ executorId }) {
     fontSize: '14px',
     textAlign: 'center'
   }}
->💬 Написать @{order.client_telegram_username || order.client?.telegram_username}</a>
+><UiIcon name="telegram" size={16}/>Написать @{order.client_telegram_username || order.client?.telegram_username}</a>
 )}
-<button onClick={() => callPhone(order.client_phone || order.client?.phone)} style={{
+<button className="eb-cab-secondary" onClick={() => callPhone(order.client_phone || order.client?.phone)} style={{
   flex: 1,
   padding: '8px',
   background: '#f0f0f0',
@@ -1618,19 +1579,20 @@ function ExecutorPage({ executorId }) {
   cursor: 'pointer',
   fontSize: '14px',
   textAlign: 'center'
-}}>📞 Позвонить</button>
+}}><UiIcon name="phone" size={16}/>Позвонить</button>
 </div>
 {(order.client_phone || order.client?.phone) && (
   <div
     onClick={() => copyPhone(order.client_phone || order.client?.phone)}
     style={{ marginTop: '6px', textAlign: 'center', fontSize: '12px', color: '#888', cursor: 'pointer' }}
   >
-    📋 {normalizePhone(order.client_phone || order.client?.phone)} (нажми, чтобы скопировать)
+    <UiIcon name="clipboard" size={13} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 4 }}/>{normalizePhone(order.client_phone || order.client?.phone)} (нажмите, чтобы скопировать)
   </div>
 )}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                     {order.status === 'new' && (
                       <button
+                        className="eb-cab-primary"
                       onClick={async () => {
                         await supabase.from('orders').update({ status: 'confirmed_by_executor' }).eq('id', order.id)
                         await supabase.rpc('consume_lead', { p_order_id: order.id })
@@ -1647,11 +1609,12 @@ function ExecutorPage({ executorId }) {
                           fontSize: '14px'
                         }}
                       >
-                        ✅ Принять
+                        <UiIcon name="check" size={16}/>Принять
                       </button>
                     )}
                     {!['new', 'done', 'cancelled'].includes(order.status) && (
                       <button
+                        className="eb-cab-primary"
                         onClick={async () => {
                           await supabase.from('orders').update({ status: 'done' }).eq('id', order.id)
                           setOrders(orders.map(o => o.id === order.id ? { ...o, status: 'done' } : o))
@@ -1667,11 +1630,12 @@ function ExecutorPage({ executorId }) {
                           fontSize: '14px'
                         }}
                       >
-                        🏁 Завершить
+                        <UiIcon name="verified" size={16}/>Завершить
                       </button>
                     )}
                     {!['done', 'cancelled'].includes(order.status) && (
   <button
+    className="eb-cab-danger"
     onClick={async () => {
       if (!confirm('Отменить заказ? Клиент получит уведомление об отмене.')) return
       await supabase.from('orders').update({ status: 'cancelled', cancelled_by: 'executor' }).eq('id', order.id)
@@ -1689,7 +1653,7 @@ function ExecutorPage({ executorId }) {
       fontSize: '14px'
     }}
   >
-    ✕ Отменить
+    <UiIcon name="close" size={16}/>Отменить
   </button>
 )}
                   </div>
@@ -1707,11 +1671,13 @@ function ExecutorPage({ executorId }) {
 
       {/* Заработок */}
       {activeTab === 'earnings' && (
-        <div style={{ background: 'white', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <p style={{ color: '#666', textAlign: 'center' }}>Статистика заработка — скоро 🚀</p>
+        <div className="eb-cab-empty">
+          <div className="eb-cab-empty-icon"><UiIcon name="wallet" size={27}/></div>
+          <strong>Статистика заработка</strong><span style={{ marginTop: 7, fontSize: 13 }}>Раздел скоро появится.</span>
         </div>
       )}
 
+      </div>
     </div>
   )
 }

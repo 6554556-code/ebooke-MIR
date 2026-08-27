@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import UiIcon from './UiIcon'
 
 // ⚠️ ЗАМЕНИ на актуальный username бота (без @)
 const BOT_USERNAME = 'Ebookee777_bot'
@@ -15,8 +16,6 @@ export default function BalanceBlock({ executor }) {
 
   const freeRemaining = Math.max(0, FREE_LEADS_LIMIT - freeLeadsUsed)
   const hasFreeLeads = freeRemaining > 0
-  const canPay = balance >= LEAD_COST
-
   // Сколько ещё заказов доступно: бесплатные + куплено за баланс
   const paidLeadsAvailable = Math.floor(balance / LEAD_COST)
   const totalLeadsAvailable = freeRemaining + paidLeadsAvailable
@@ -27,17 +26,17 @@ export default function BalanceBlock({ executor }) {
     big = totalLeadsAvailable
     small = 'заказов'
     if (hasFreeLeads) {
-      bg = '#fef3c7' // мягкий жёлтый — есть бесплатные
-      fg = '#92400e'
+      bg = '#FFF0FA'
+      fg = '#8F2B7F'
     } else {
-      bg = '#dbeafe' // мягкий синий — только за деньги
-      fg = '#1e40af'
+      bg = '#F1EEFF'
+      fg = '#6850A1'
     }
   } else {
     big = 'Пополнить'
     small = `${balance} ₽ на счету`
-    bg = '#fee2e2' // мягкий красный — пора пополнить
-    fg = '#991b1b'
+    bg = '#FFF1F3'
+    fg = '#AD4557'
   }
 
   const handleTopup = () => {
@@ -56,6 +55,7 @@ export default function BalanceBlock({ executor }) {
   return (
     <>
       <button
+        className="eb-cab-balance"
         onClick={() => setShowModal(true)}
         style={{
           padding: '4px 12px',
@@ -76,7 +76,7 @@ export default function BalanceBlock({ executor }) {
       </button>
 
       {showModal && (
-        <div
+        <div className="eb-cab-modal-backdrop"
           onClick={() => setShowModal(false)}
           style={{
             position: 'fixed',
@@ -89,7 +89,7 @@ export default function BalanceBlock({ executor }) {
             padding: '16px',
           }}
         >
-          <div
+          <div className="eb-cab-modal"
             onClick={(e) => e.stopPropagation()}
             style={{
               background: 'white',
@@ -101,7 +101,7 @@ export default function BalanceBlock({ executor }) {
             }}
           >
             <h3 style={{ margin: '0 0 14px', fontSize: '18px', textAlign: 'center' }}>
-              Баланс
+              <UiIcon name="wallet" size={20} style={{ display: 'inline', verticalAlign: '-4px', marginRight: 7, color: '#A33592' }}/>Баланс
             </h3>
 
             <div style={{
@@ -138,6 +138,7 @@ export default function BalanceBlock({ executor }) {
             </p>
 
             <button
+              className="eb-cab-primary"
               onClick={handleTopup}
               style={{
                 width: '100%',
