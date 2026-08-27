@@ -1278,7 +1278,7 @@ function ExecutorPage({ executorId }) {
           Этот раздел — личный кабинет исполнителя. Чтобы принимать заказы,
           зарегистрируйте профиль.
         </p>
-        <a href="/?register=executor"
+        <a href="/register"
           style={{ display: 'inline-block', padding: '13px 26px', borderRadius: '12px', background: '#2481cc', color: '#fff', textDecoration: 'none', fontSize: '16px', fontWeight: 700 }}>
           Стать исполнителем
         </a>
@@ -1317,7 +1317,7 @@ function ExecutorPage({ executorId }) {
         <a href="/" className="eb-cab-brand" aria-label="На главную ebookee"><BrandMark size={30}/><span className="eb-brand-name">ebookee</span></a>
         <div className="eb-cab-nav-actions">
           <button className="eb-cab-nav-action" onClick={() => setShowHelpModal(true)}><UiIcon name="help" size={17}/><span className="eb-cab-action-label">Помощь</span></button>
-          <a href="/?settings=1" className="eb-cab-nav-action"><UiIcon name="settings" size={17}/><span className="eb-cab-action-label">Настройки</span></a>
+          <a href="/settings" className="eb-cab-nav-action"><UiIcon name="settings" size={17}/><span className="eb-cab-action-label">Настройки</span></a>
           {getSession()?.id && <button className="eb-cab-nav-action" data-danger="true" onClick={() => { clearSession(); window.location.href = '/' }} aria-label="Выйти" title="Выйти"><UiIcon name="logout" size={17}/><span className="eb-cab-action-label">Выйти</span></button>}
         </div>
       </div>
