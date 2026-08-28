@@ -399,7 +399,7 @@ const [reviewModalOrder, setReviewModalOrder] = useState(null)
             {/* Кнопка "Записаться снова" — только в прошедших */}
             {tab === 'past' && order.executor_id && (
               <a
-              href={'/?executor_id=' + order.executor_id + '&book=1'}
+              href={'/master/' + order.executor_id}
                 className="eb-cab-secondary"
                 style={{
                   display: 'block', marginTop: '8px', width: '100%', padding: '8px',
