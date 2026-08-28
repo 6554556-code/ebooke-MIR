@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { useProfessions } from "../hooks/useProfessions.js";
 import { loadReviewsByExecutors, calculateStats } from "../reviewsUtils.js";
@@ -15,6 +15,7 @@ import ClientPageWeb from './ClientPageWeb'
 function ClientPage() {
   // id мастера из пути /master/:id — если открыли витрину по красивой ссылке
   const { id: masterIdFromPath } = useParams()
+  const navigate = useNavigate()
   const [executors, setExecutors] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
@@ -418,11 +419,7 @@ useEffect(() => {
         setVisitType={setVisitType}
         mapFull={mapFull}
         setMapFull={setMapFull}
-        onBook={(executor) => {
-          setSelectedExecutor(executor)
-          setSelectedSlot(null)
-          setShowBooking(true)
-        }}
+        onBook={(executor) => navigate('/master/' + executor.id)}
       />
     )
   }
