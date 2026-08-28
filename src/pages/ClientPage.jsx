@@ -77,6 +77,17 @@ function ClientPage() {
         if (data?.service_type) setSelectedService(data.service_type)
       })
   }, [])
+  // Реакция на смену /master/:id в адресе (клик "Записаться", когда мы уже на главной).
+  // useState читает путь только при рождении компонента — а тут он уже живёт, поэтому ловим смену пути отдельно.
+  useEffect(() => {
+    if (masterIdFromPath) {
+      setPendingBookExecutorId(Number(masterIdFromPath))
+    } else {
+      // Ушли с /master/:id (например, назад на главную) — закрываем бронь
+      setShowBooking(false)
+    }
+  }, [masterIdFromPath])
+
   // Когда исполнители загрузились и есть pendingBookExecutorId — открываем бронь
   useEffect(() => {
     if (!pendingBookExecutorId || executors.length === 0) return
